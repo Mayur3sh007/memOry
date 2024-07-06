@@ -31,26 +31,6 @@ export default function Home() {
     }
   };
 
-  // useEffect(() => {
-  //   const checkUser = async () => {
-  //     try {
-  //       const currentUser = auth.currentUser;
-  //       if (currentUser) {
-  //         setUser(currentUser);
-  //         setUserLoggedIn(true);
-  //       } else {
-  //         setUser(null);
-  //         setUserLoggedIn(false);
-  //         router.push("/sign-up");
-  //       }
-  //     } catch (error : any) {
-  //       console.error("Authentication Error:", error.message);
-  //     }
-  //   };
-
-  //   checkUser();
-  // }, []);
-
   return (
     <div className="flex flex-col items-end justify-center h-[50px] w-screen mr-auto">
         <>

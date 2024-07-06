@@ -97,7 +97,6 @@ const LoginPage = () => {
             <h3>Don't have an account?</h3>
           </Link>
         </div>
-        <ToastContainer />
       </form>
     </div>
   );

@@ -3,14 +3,14 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { auth, db, googleAuthProvider, storage } from "@/config/firebase"; 
-import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithPopup } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { collection, addDoc } from "firebase/firestore";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/utils/cn";
 import { IconBrandGoogle } from "@tabler/icons-react";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Switch } from "@/components/ui/switch";
 
@@ -175,7 +175,7 @@ const SignupPage = () => {
           </Link>
         </div>
       </form>
-      <ToastContainer />
+      
     </div>
   );
 };
