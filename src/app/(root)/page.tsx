@@ -2,26 +2,30 @@
 import { useEffect, useState } from "react";
 import { auth } from "@/config/firebase";
 import { setPersistence, browserLocalPersistence } from "firebase/auth";
-import { onAuthStateChanged, signOut, User as FirebaseUser } from "firebase/auth";
+import { onAuthStateChanged, User as FirebaseUser } from "firebase/auth";
 import { useRouter } from "next/navigation";
-import { cn } from "@/utils/cn";
+import Header from "@/components/Header";
+import Sidebar from "@/components/Sidebar";
+import { ThemeProvider } from "next-themes";
+import AddNote from "@/components/AddNotes";
 
 export default function Home() {
   const [user, setUser] = useState<FirebaseUser | null>(null);
+
+  console.log(auth.currentUser?.uid);
+
   const router = useRouter();
-
-
   useEffect(() => {
     const setAuthPersistence = async () => {
       try {
         await setPersistence(auth, browserLocalPersistence);
-      } catch (error : any) {
+      } catch (error: any) {
         console.error("Setting persistence error:", error.message);
       }
     };
-  
+
     setAuthPersistence();
-  
+
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
         setUser(currentUser);
@@ -30,27 +34,27 @@ export default function Home() {
         router.push("/sign-up");
       }
     });
-  
+
     return () => unsubscribe();
   }, [router]);
-  
 
-  const logout = async () => {
-    try {
-      await signOut(auth);
-      router.push("/sign-up");
-    } catch (error : any) {
-      console.error("Logout Error:", error.message);
-    }
-  };
+
+
 
   return (
-    <div className="flex flex-col items-end justify-center h-[50px] w-screen mr-auto">
-        <>
-          {/* Display user information */}
-          
-          <button onClick={logout}>Logout</button>
-        </>
+    <div className="flex w-screen min-h-screen">
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Header />
+          <Sidebar />
+          <div className="flex w-full h-full mt-10">
+            <AddNote />
+          </div>
+        </ThemeProvider>
     </div>
   );
 }

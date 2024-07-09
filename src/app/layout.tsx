@@ -3,6 +3,8 @@ import "./globals.css";
 import { Inter as FontSans } from "next/font/google"
 import { cn } from "@/utils/cn";
 import { ToastContainer } from "react-toastify";
+import { ThemeProvider } from "@/components/theme-provider"
+
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -10,8 +12,8 @@ const fontSans = FontSans({
 })
 
 export const metadata: Metadata = {
-  title: "Learn Firebase",
-  description: "first solo project with Firebase",
+  title: "Todo List",
+  description: "Todo List",
   icons: {
     icon: "/favicon.ico",
     shortcut: "/favicon-16x16.png",
@@ -25,13 +27,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={cn(
           "min-h-screen bg-background font-sans antialiased",
           fontSans.variable
         )}>
-        <ToastContainer />
-        {children}
+          
+            <ToastContainer />  
+            {children}
       </body>
     </html>
   );

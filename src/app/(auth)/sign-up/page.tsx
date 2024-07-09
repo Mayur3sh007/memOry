@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { auth, db, googleAuthProvider, storage } from "@/config/firebase"; 
 import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { collection, addDoc } from "firebase/firestore";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/utils/cn";
@@ -13,6 +12,7 @@ import { IconBrandGoogle } from "@tabler/icons-react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Switch } from "@/components/ui/switch";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 
 const SignupPage = () => {
   const [email, setEmail] = useState("");
@@ -55,13 +55,23 @@ const SignupPage = () => {
           const snapshot = await uploadBytes(avatarRef, avatar);
           avatarURL = await getDownloadURL(snapshot.ref);
         }
-        
-        await addDoc(collection(db, "Users"), {
-          uid: user.uid,
-          username: username,
-          email: email,
-          avatarURL: avatarURL,
-        });
+
+        const userRef = doc(db, "Users", user.uid);  // Creates doc id with user uid
+        const userDoc = await getDoc(userRef);
+
+        if(!userDoc.exists()){
+          await setDoc(userRef, {
+            username: username,
+            email: email,
+            avatarURL: avatarURL,
+          });
+        }
+        // await addDoc(collection(db, "Users"), {  // Creates random doc id for user 
+        //   uid: user.uid,
+        //   username: username,
+        //   email: email,
+        //   avatarURL: avatarURL,
+        // });
 
         if (rememberMe) {
           localStorage.setItem("email", email);
@@ -69,9 +79,9 @@ const SignupPage = () => {
           localStorage.setItem("avatarURL", avatarURL || "");
         }
 
-        toast.success("Successfully signed up!", {
-          position: "bottom-left",
-        });
+        // toast.success("Successfully signed up!", {
+        //   position: "bottom-left",
+        // });
         router.push("/");
       }
     } catch (error: any) {
@@ -85,9 +95,9 @@ const SignupPage = () => {
   const signInWithGoogle = async () => {
     try {
       await signInWithPopup(auth, googleAuthProvider);
-      toast.success("Successfully signed in with Google!", {
-        position: "bottom-left",
-      });
+      // toast.success("Successfully signed in with Google!", {
+      //   position: "bottom-left",
+      // });
       router.push("/");
     } catch (error: any) {
       console.error("Google Sign-in Error:", error.message);
