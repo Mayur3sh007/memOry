@@ -2,8 +2,8 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { auth, db, googleAuthProvider, storage } from "@/config/firebase"; 
-import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import { auth, db, googleAuthProvider, storage } from "@/config/firebase";
+import { createUserWithEmailAndPassword, signInWithPopup, User } from "firebase/auth";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -18,26 +18,52 @@ const SignupPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
-  const [avatar, setAvatar] = useState(null);
+  const [avatar, setAvatar] = useState<File | null>(null);
   const [rememberMe, setRememberMe] = useState(false);
   const router = useRouter();
 
+  // Fetching user data from local storage if it exists
   useEffect(() => {
     const savedEmail = localStorage.getItem("email");
     const savedUsername = localStorage.getItem("username");
     const savedAvatarURL = localStorage.getItem("avatarURL");
 
-    if (savedEmail && savedUsername && savedAvatarURL) {
+    if (savedEmail && savedUsername) {
       setEmail(savedEmail);
       setUsername(savedUsername);
     }
   }, []);
 
-  const addAvatar = async (e: any) => {
-    try {
+  const addAvatar = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
       setAvatar(e.target.files[0]);
-    } catch (error) {
-      console.log(error);
+    }
+  };
+
+  const addUsertoDB = async (user: User, avatarURL: string | null, username: string, email: string) => {
+    try {
+      const userRef = doc(db, "Users", user.uid);
+      const userDoc = await getDoc(userRef);
+
+      if (!userDoc.exists()) {
+        await setDoc(userRef, {
+          username: username,
+          email: email,
+          avatarURL: avatarURL,
+        });
+
+        // Creates random doc id for user 
+        // await addDoc(collection(db, "Users"), {  
+        //   uid: user.uid,
+        //   username: username,
+        //   email: email,
+        //   avatarURL: avatarURL,
+        // });
+      }
+    } catch (error: any) {
+      toast.error(`Error: ${error.message}`, {
+        position: "bottom-left",
+      });
     }
   };
 
@@ -56,32 +82,16 @@ const SignupPage = () => {
           avatarURL = await getDownloadURL(snapshot.ref);
         }
 
-        const userRef = doc(db, "Users", user.uid);  // Creates doc id with user uid
-        const userDoc = await getDoc(userRef);
-
-        if(!userDoc.exists()){
-          await setDoc(userRef, {
-            username: username,
-            email: email,
-            avatarURL: avatarURL,
-          });
-        }
-        // await addDoc(collection(db, "Users"), {  // Creates random doc id for user 
-        //   uid: user.uid,
-        //   username: username,
-        //   email: email,
-        //   avatarURL: avatarURL,
-        // });
+        await addUsertoDB(user, avatarURL, username, email);
 
         if (rememberMe) {
           localStorage.setItem("email", email);
           localStorage.setItem("username", username);
           localStorage.setItem("avatarURL", avatarURL || "");
         }
-
-        // toast.success("Successfully signed up!", {
-        //   position: "bottom-left",
-        // });
+        toast.success("Successfully signed up!", {
+          position: "bottom-left",
+        });
         router.push("/");
       }
     } catch (error: any) {
@@ -94,11 +104,26 @@ const SignupPage = () => {
 
   const signInWithGoogle = async () => {
     try {
-      await signInWithPopup(auth, googleAuthProvider);
-      // toast.success("Successfully signed in with Google!", {
-      //   position: "bottom-left",
-      // });
-      router.push("/");
+      const result = await signInWithPopup(auth, googleAuthProvider);
+      const user = result.user;
+
+      if (user) {
+        const username = user.displayName || "";
+        const email = user.email || "";
+        const avatarURL = user.photoURL || null;
+
+        await addUsertoDB(user, avatarURL, username, email);
+
+        if (rememberMe) {
+          localStorage.setItem("email", email);
+          localStorage.setItem("username", username);
+          localStorage.setItem("avatarURL", avatarURL || "");
+        }
+        toast.success("Successfully signed in with Google!", {
+          position: "bottom-left",
+        });
+        router.push("/");
+      }
     } catch (error: any) {
       console.error("Google Sign-in Error:", error.message);
       toast.error(`Error: ${error.message}`, {
@@ -166,7 +191,7 @@ const SignupPage = () => {
         </button>
         <div className="flex mt-2 max-w-fit items-center justify-center space-x-2">
           <label>Remember Me</label>
-          <Switch checked={rememberMe} onCheckedChange={handleSwitchToggle}/>
+          <Switch checked={rememberMe} onCheckedChange={handleSwitchToggle} />
         </div>
         <div className="bg-gradient-to-r from-transparent via-blue-300 to-transparent my-8 h-[1px] w-full" />
         <div className="flex flex-col space-y-4">
@@ -185,7 +210,6 @@ const SignupPage = () => {
           </Link>
         </div>
       </form>
-      
     </div>
   );
 };

@@ -1,60 +1,47 @@
 "use client";
-import { useEffect, useState } from "react";
-import { auth } from "@/config/firebase";
-import { setPersistence, browserLocalPersistence } from "firebase/auth";
-import { onAuthStateChanged, User as FirebaseUser } from "firebase/auth";
-import { useRouter } from "next/navigation";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import { ThemeProvider } from "next-themes";
-import AddNote from "@/components/AddNotes";
+import AddNotes from "@/components/AddNotes";
+import NewNotes from "@/components/NewNotes";
+import { UserProvider, useUser } from "@/providers/UserContext";
+import { NotesProvider, useNotes } from "@/providers/NotesContext";
 
 export default function Home() {
-  const [user, setUser] = useState<FirebaseUser | null>(null);
-
-  console.log(auth.currentUser?.uid);
-
-  const router = useRouter();
-  useEffect(() => {
-    const setAuthPersistence = async () => {
-      try {
-        await setPersistence(auth, browserLocalPersistence);
-      } catch (error: any) {
-        console.error("Setting persistence error:", error.message);
-      }
-    };
-
-    setAuthPersistence();
-
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      if (currentUser) {
-        setUser(currentUser);
-      } else {
-        setUser(null);
-        router.push("/sign-up");
-      }
-    });
-
-    return () => unsubscribe();
-  }, [router]);
-
-
-
-
   return (
-    <div className="flex w-screen min-h-screen">
+    <UserProvider>
+      <NotesProvider>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
-          <Header />
-          <Sidebar />
-          <div className="flex w-full h-full mt-10">
-            <AddNote />
-          </div>
+          <AppContent />
         </ThemeProvider>
+      </NotesProvider>
+    </UserProvider>
+  );
+}
+
+const AppContent = () => {
+  const { notes } = useNotes();
+  const { loading } = useUser();
+
+  if (loading) return <div>Loading...</div>;
+
+  return (
+    <div className="flex w-screen min-h-screen">
+      <Header />
+      <Sidebar />
+      <div className="flex flex-col w-full h-full mt-10 space-y-10 space-x-4">
+        <AddNotes />
+        <div className="flex flex-wrap justify-center gap-4 mt-4 space-x-6">
+          {notes.map((note, index) => (
+            <NewNotes key={index} title={note.title} image={note.image} content={note.content} />
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

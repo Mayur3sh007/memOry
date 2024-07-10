@@ -30,9 +30,9 @@ const LoginPage = () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       router.push("/");
-      // toast.success("Successfully signed in!", {
-      //   position: "bottom-left",
-      // });
+      toast.success("Successfully signed in!", {
+        position: "bottom-left",
+      });
       if (rememberMe) {
         localStorage.setItem("email", email);
       }
