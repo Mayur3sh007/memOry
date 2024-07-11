@@ -10,6 +10,7 @@ type UserContextType = {
   username: string | null;
   email: string | null;
   avatarURL: string | null;
+  uid: string | null;
 };
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -20,6 +21,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [username, setUsername] = useState<string | null>(null);
   const [email, setEmail] = useState<string | null>(null);
   const [avatarURL, setAvatarURL] = useState<string | null>(null);
+  const [uid, setUid] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -46,6 +48,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
             setUsername(userData.username || null);
             setEmail(userData.email || null);
             setAvatarURL(userData.avatarURL || null);
+            setUid(currentUser.uid || null);
           }
         } catch (error: any) {
           console.error("Error fetching user data:", error.message);
@@ -59,7 +62,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   }, [router]);
 
   return (
-    <UserContext.Provider value={{ user, loading, username, email, avatarURL }}>
+    <UserContext.Provider value={{ user, loading, username, email, avatarURL, uid }}>
       {children}
     </UserContext.Provider>
   );

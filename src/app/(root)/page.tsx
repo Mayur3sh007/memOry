@@ -6,6 +6,7 @@ import AddNotes from "@/components/AddNotes";
 import NewNotes from "@/components/NewNotes";
 import { UserProvider, useUser } from "@/providers/UserContext";
 import { NotesProvider, useNotes } from "@/providers/NotesContext";
+import OldNotes from "@/components/OldNotes";
 
 export default function Home() {
   return (
@@ -40,6 +41,7 @@ const AppContent = () => {
           {notes.map((note, index) => (
             <NewNotes key={index} title={note.title} image={note.image} content={note.content} />
           ))}
+          <OldNotes />
         </div>
       </div>
     </div>

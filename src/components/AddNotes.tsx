@@ -1,21 +1,50 @@
 import React, { useState, ChangeEvent } from 'react';
 import { useNotes } from '@/providers/NotesContext';
+import { useUser } from '@/providers/UserContext';
+import { addDoc, collection } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { db, storage } from '@/config/firebase';
 
 const AddNotes = () => {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
-    const [img, setImg] = useState<File | null>(null); // State to hold the selected image file
-
+    const [img, setImg] = useState<File | null>(null);
+    const {uid} = useUser();
+    const {addNote} = useNotes();
     const [isOpen, setIsOpen] = useState(false);
-    const { addNote } = useNotes();
+    const [imageURL, setImageURL] = useState<string | null>(null);
 
-    const handleSave = () => {
-        addNote(title, img, content);
+    const handleSave = async () => {
+        if (!uid) {
+            console.error("User is not logged in");
+            return;
+        }
+
+        let uploadedImageURL = null;
+        if (img) {
+            const imageRef = ref(storage, `notes/${uid}/${Date.now()}_${img.name}`);
+            await uploadBytes(imageRef, img);
+            uploadedImageURL = await getDownloadURL(imageRef);
+        }
+
+        const noteData = {
+            Title: title,
+            Content: content,
+            ImageURL: uploadedImageURL,
+            userID: uid,
+            CreatedAt: new Date().toISOString(),
+        };
+        
+        const noteRef = collection(db, "Notes");
+        await addDoc(noteRef, noteData);
+
+        addNote(title, uploadedImageURL, content);
 
         // Reset form fields
         setTitle('');
         setContent('');
         setImg(null);
+        setImageURL(null);
         setIsOpen(false);
     };
 
@@ -23,6 +52,7 @@ const AddNotes = () => {
         const file = e.target.files && e.target.files[0];
         if (file) {
             setImg(file);
+            setImageURL(URL.createObjectURL(file));
         }
     };
 
@@ -30,8 +60,9 @@ const AddNotes = () => {
         setTitle('');
         setContent('');
         setImg(null);
+        setImageURL(null);
         setIsOpen(false);
-    };
+    }
 
     return (
         <div className={`mx-auto mt-5 p-6 rounded-lg shadow-lg relative bg-yellow-500 ${isOpen ? 'w-96' : 'w-80'} ${isOpen ? 'h-auto' : 'h-24'}`}>
@@ -39,23 +70,24 @@ const AddNotes = () => {
                 📌
             </button>
 
-            {isOpen && (
-                <input
-                    className="w-full bg-gray-100 mt-2 p-2 rounded resize-none focus:outline-none text-black"
-                    type="text"
-                    placeholder="Title"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                />
-            )}
-            <textarea
+            <input
                 className="w-full bg-gray-100 mt-2 p-2 rounded resize-none focus:outline-none text-black"
-                rows={isOpen ? 4 : 1}
-                placeholder="Take a note..."
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
+                type="text"
+                placeholder="Title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
                 onClick={() => setIsOpen(true)}
             />
+
+            {isOpen && (
+                <textarea
+                    className="w-full bg-gray-100 mt-2 p-2 rounded resize-none focus:outline-none text-black"
+                    rows={isOpen ? 4 : 1}
+                    placeholder="Take a note..."
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
+                />
+            )}
             {isOpen && (
                 <div className="flex justify-between mt-3">
                     <div className="flex space-x-2 text-gray-900">

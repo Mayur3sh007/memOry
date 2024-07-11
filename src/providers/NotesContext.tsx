@@ -2,13 +2,13 @@ import React, { createContext, useContext, useState } from 'react';
 
 type Note = {
   title: string;
-  image: File | null; // Changed type to File | null
+  image: string | null;
   content: string;
 };
 
 type NotesContextType = {
   notes: Note[];
-  addNote: (title: string, image: File | null, content: string) => void; // Adjusted parameter type for image
+  addNote: (title: string, image: string | null, content: string) => void;
 };
 
 const NotesContext = createContext<NotesContextType | undefined>(undefined);
@@ -16,7 +16,7 @@ const NotesContext = createContext<NotesContextType | undefined>(undefined);
 export const NotesProvider = ({ children }: { children: React.ReactNode }) => {
   const [notes, setNotes] = useState<Note[]>([]);
 
-  const addNote = (title: string, image: File | null, content: string) => {
+  const addNote = (title: string, image: string | null, content: string) => {
     setNotes([...notes, { title, image, content }]);
   };
 

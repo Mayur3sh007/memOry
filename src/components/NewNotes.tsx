@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { styled } from '@mui/material/styles';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import CardMedia from '@mui/material/CardMedia';
@@ -16,7 +15,7 @@ import { useUser } from '@/providers/UserContext';
 
 interface NewNotesProps {
   title: string;
-  image: File | null;
+  image: string | null;
   content: string;
 }
 
@@ -24,7 +23,7 @@ const NewNotes: React.FC<NewNotesProps> = ({ title, image, content }) => {
   const { username, avatarURL } = useUser();
 
   return (
-    <Card sx={{ maxWidth: 345 }}>
+    <Card sx={{ maxWidth: 345, marginBottom: 2 }}>
       <CardHeader
         avatar={
           <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
@@ -47,7 +46,7 @@ const NewNotes: React.FC<NewNotesProps> = ({ title, image, content }) => {
         <CardMedia
           component="img"
           height="194"
-          src={URL.createObjectURL(image)} // Assuming image is a File object
+          src={image}
           alt={title}
         />
       )}
