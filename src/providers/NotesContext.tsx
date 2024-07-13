@@ -4,6 +4,8 @@ type Note = {
   title: string;
   image: string | null;
   content: string;
+  reminder: boolean;
+  pinned: boolean;
 };
 
 type NotesContextType = {
@@ -17,8 +19,14 @@ export const NotesProvider = ({ children }: { children: React.ReactNode }) => {
   const [notes, setNotes] = useState<Note[]>([]);
 
   const addNote = (title: string, image: string | null, content: string) => {
-    setNotes([...notes, { title, image, content }]);
+    // setNotes([...notes, { title, image, content,reminder:false,pinned:false }]); //appending the new note to the array
+    //New notes on top
+    setNotes([{ title, image, content,reminder:false,pinned:false },...notes]); //Prepending the new note to the array
   };
+
+  const reloadNotes = async () => {
+    
+  }
 
   return (
     <NotesContext.Provider value={{ notes, addNote }}>
