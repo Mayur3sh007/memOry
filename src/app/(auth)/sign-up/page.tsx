@@ -11,7 +11,6 @@ import { cn } from "@/utils/cn";
 import { IconBrandGoogle } from "@tabler/icons-react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Switch } from "@/components/ui/switch";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 
 const SignupPage = () => {
@@ -19,7 +18,6 @@ const SignupPage = () => {
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
   const [avatar, setAvatar] = useState<File | null>(null);
-  const [rememberMe, setRememberMe] = useState(false);
   const router = useRouter();
 
   // Fetching user data from local storage if it exists
@@ -84,11 +82,6 @@ const SignupPage = () => {
 
         await addUsertoDB(user, avatarURL, username, email);
 
-        if (rememberMe) {
-          localStorage.setItem("email", email);
-          localStorage.setItem("username", username);
-          localStorage.setItem("avatarURL", avatarURL || "");
-        }
         toast.success("Successfully signed up!", {
           position: "bottom-left",
         });
@@ -114,11 +107,6 @@ const SignupPage = () => {
 
         await addUsertoDB(user, avatarURL, username, email);
 
-        if (rememberMe) {
-          localStorage.setItem("email", email);
-          localStorage.setItem("username", username);
-          localStorage.setItem("avatarURL", avatarURL || "");
-        }
         toast.success("Successfully signed in with Google!", {
           position: "bottom-left",
         });
@@ -132,9 +120,7 @@ const SignupPage = () => {
     }
   };
 
-  const handleSwitchToggle = () => {
-    setRememberMe(!rememberMe);
-  };
+
 
   return (
     <div className="max-w-md w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-gray-200 border border-y-neutral-400">
@@ -189,10 +175,6 @@ const SignupPage = () => {
         >
           Sign up &rarr;
         </button>
-        <div className="flex mt-2 max-w-fit items-center justify-center space-x-2">
-          <label>Remember Me</label>
-          <Switch checked={rememberMe} onCheckedChange={handleSwitchToggle} />
-        </div>
         <div className="bg-gradient-to-r from-transparent via-blue-300 to-transparent my-8 h-[1px] w-full" />
         <div className="flex flex-col space-y-4">
           <button

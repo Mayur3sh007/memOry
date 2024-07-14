@@ -20,8 +20,10 @@ const LoginPage = () => {
   
   useEffect(() => {
     const savedEmail = localStorage.getItem("email");
+    const savedPassword = localStorage.getItem("password");
     if (savedEmail) {
       setEmail(savedEmail);
+      setPassword(savedPassword);
     }
   }, []);
 
@@ -35,6 +37,7 @@ const LoginPage = () => {
       });
       if (rememberMe) {
         localStorage.setItem("email", email);
+        localStorage.setItem("password", password);
       }
     } catch (error) {
       console.log(error);
