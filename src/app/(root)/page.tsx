@@ -5,6 +5,7 @@ import AddNotes from "@/components/AddNotes";
 import { UserProvider, useUser } from "@/providers/UserContext";
 import { NotesProvider, useNotes } from "@/providers/NotesContext";
 import AllNotes from "@/components/AllNotes";
+import PinnedNotes from "@/components/PinnedNotes";
 
 export default function Home() {
   return (
@@ -36,6 +37,7 @@ const AppContent = () => {
           <AddNotes />
         </div>
         <div className="flex flex-col justify-center gap-4 mt-4">
+          <PinnedNotes />
           <AllNotes />
         </div>
       </div>

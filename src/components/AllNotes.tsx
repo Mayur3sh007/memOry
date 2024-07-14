@@ -15,7 +15,7 @@ type Note = {
 
 const AllNotes: React.FC = () => {
   const { uid} = useUser();
-  const { notes } = useNotes();
+  const { notes, isPinChanged } = useNotes();
   const [Notes, setNotes] = useState<Note[]>([]);
 
   const fetchNotes = async () => {
@@ -40,6 +40,7 @@ const AllNotes: React.FC = () => {
 
   useEffect(() => {
     fetchNotes();
+    console.log("AllNotes");
   }, [uid,notes]);  //refresh notes when uid changes i.e user refreshes page && whenever theres somekinda changes in notes
 
   const editNote = async (id: string, title: string, content: string, image: string | null) => {
@@ -66,6 +67,53 @@ const AllNotes: React.FC = () => {
     }
   };
 
+  const pinNote = async (id : string) => {
+    try {
+      // Retrieve the current array of pinned note IDs from local storage
+      const pinnedNotes = JSON.parse(localStorage.getItem('PinnedNotesId') || '[]');
+      
+      // Append the new ID to the array
+      pinnedNotes.push(id);
+      
+      // Save the updated array back to local storage
+      localStorage.setItem('PinnedNotesId', JSON.stringify(pinnedNotes));
+      
+      // Fetch notes if necessary
+      fetchNotes();
+
+      isPinChanged(); // Trigger rerender
+    } catch (error) {
+      console.error('Error pinning note: ', error);
+    }
+  };
+
+  const unpinNote = async (id : string) => {
+    try {
+      // Retrieve the current array of pinned note IDs from local storage
+      const pinnedNotes = JSON.parse(localStorage.getItem('PinnedNotesId') || '[]');
+      
+      // Remove the ID from the array
+      pinnedNotes.splice(pinnedNotes.indexOf(id), 1);
+      
+      // Save the updated array back to local storage
+      localStorage.setItem('PinnedNotesId', JSON.stringify(pinnedNotes));
+      
+      // Fetch notes if necessary
+      fetchNotes();
+    } catch (error) {
+      console.error('Error unpinning note: ', error);
+    }
+  };
+
+  const isPinned = (id : string) => {
+    // Retrieve the current array of pinned note IDs from local storage
+    const pinnedNotes = JSON.parse(localStorage.getItem('PinnedNotesId') || '[]');
+    
+    // Check if the note ID is in the array
+    return pinnedNotes.includes(id);
+  };
+  
+
 
   const notesWithImages = Notes.filter(note => note.ImageURL !== null);
   const notesWithOutImages = Notes.filter(note => note.ImageURL === null);
@@ -74,8 +122,8 @@ const AllNotes: React.FC = () => {
     return (
       <>
         <h1 className="text-center text-2xl font-bold">All Notes</h1>
-        <NotesCard notes={notesWithOutImages}  withImage={false} deleteNote={deleteNote} editNote={editNote} />
-        <NotesCard notes={notesWithImages}  withImage={true} deleteNote={deleteNote} editNote={editNote} />
+        <NotesCard notes={notesWithOutImages}  withImage={false} deleteNote={deleteNote} editNote={editNote} pinNote={pinNote} unpinNote={unpinNote} isPinned={isPinned} />
+        <NotesCard notes={notesWithImages}  withImage={true} deleteNote={deleteNote} editNote={editNote} pinNote={pinNote} unpinNote={unpinNote} isPinned={isPinned} />
       </>
     )
   }

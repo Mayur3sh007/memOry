@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent } from 'react';
+import React, { useState, ChangeEvent, useEffect } from 'react';
 import { useNotes } from '@/providers/NotesContext';
 import { useUser } from '@/providers/UserContext';
 import { addDoc, collection } from 'firebase/firestore';
@@ -34,8 +34,6 @@ const AddNotes = () => {
             ImageURL: uploadedImageURL,
             userID: uid,
             CreatedAt: new Date().toISOString(),
-            reminder: false,
-            pinned: false,
         };
         
         const noteRef = collection(db, "Notes");

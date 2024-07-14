@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import AlarmIcon from '@mui/icons-material/Alarm';
-import { PinIcon } from 'lucide-react';
+import { PinIcon, PinOffIcon } from 'lucide-react';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -34,9 +34,12 @@ type NotesCardProps = {
   withImage: boolean;
   deleteNote: (id: string) => void;
   editNote: (id: string, title: string, content: string, image: string | null) => void;
+  pinNote: (id: string) => void;
+  unpinNote: (id: string) => void;
+  isPinned: (id: string) => boolean;
 };
 
-const NotesCard: React.FC<NotesCardProps> = ({ notes, withImage, deleteNote, editNote }) => {
+const NotesCard: React.FC<NotesCardProps> = ({ notes, withImage, deleteNote, editNote, pinNote, unpinNote, isPinned }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editingNote, setEditingNote] = useState<Note | null>(null);
   const [editTitle, setEditTitle] = useState('');
@@ -85,84 +88,90 @@ const NotesCard: React.FC<NotesCardProps> = ({ notes, withImage, deleteNote, edi
     }
   };
 
+  const handleDeleteNote = async (id: string) => {
+    deleteNote(id);
+  };
+
   return (
     <>
       <div className="flex flex-wrap justify-center gap-4 mt-4">
         {notes.length > 0 ? (
-          notes.map(note => (
-            <Card
-              key={note.id}
-              sx={{
-                width: '300px',
-                height: withImage ? 'auto' : '300px',
-                display: 'flex',
-                flexDirection: 'column',
-                marginBottom: '16px'
-              }}
-              className='bg-gray-500 dark:bg-yellow-400'
-            >
-              <CardHeader
-                className='font-bold text-xl text-yellow-400 dark:text-white'
-                title={note.Title}
-                subheader={new Date(note.CreatedAt).toLocaleDateString()}
-              />
-              {note.ImageURL && (
-                <CardMedia
-                  component="div"
-                  sx={{
-                    height: 0,
-                    paddingTop: '100.25%',
-                    backgroundRepeat: 'no-repeat',
-                    paddingInline: '1px',
-                    backgroundImage: `url(${note.ImageURL})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                  }}
+          notes.map(note =>
+            !isPinned(note.id) ? (
+              <Card
+                key={note.id}
+                sx={{
+                  width: '300px',
+                  height: withImage ? 'auto' : '300px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  marginBottom: '16px'
+                }}
+                className='bg-gray-500 dark:bg-yellow-400'
+              >
+                <CardHeader
+                  className='font-bold text-xl text-yellow-400 dark:text-white'
+                  title={note.Title}
+                  subheader={new Date(note.CreatedAt).toLocaleDateString()}
                 />
-              )}
+                {note.ImageURL && (
+                  <CardMedia
+                    component="div"
+                    sx={{
+                      height: 0,
+                      paddingTop: '100.25%',
+                      backgroundRepeat: 'no-repeat',
+                      paddingInline: '1px',
+                      backgroundImage: `url(${note.ImageURL})`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                    }}
+                  />
+                )}
 
-              <CardContent sx={{ flexGrow: 1, overflowY: 'auto' }}>
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  className='text-justify overflow-y-auto break-words whitespace-normal'
-                  sx={{
-                    wordWrap: 'break-word',
-                    overflowWrap: 'break-word',
-                    hyphens: 'auto',
-                    maxHeight: '150px'
-                  }}
-                >
-                  {note.Content}
-                </Typography>
-                {/* {(note.ImageURL && (
-                  <div className="mt-2">
-                    <img src={note.ImageURL} alt="Preview" className="w-full rounded" />
-                  </div>
-                ))} */}
-              </CardContent>
+                <CardContent sx={{ flexGrow: 1, overflowY: 'auto' }}>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    className='text-justify overflow-y-auto break-words whitespace-normal'
+                    sx={{
+                      wordWrap: 'break-word',
+                      overflowWrap: 'break-word',
+                      hyphens: 'auto',
+                      maxHeight: '150px'
+                    }}
+                  >
+                    {note.Content}
+                  </Typography>
+                </CardContent>
 
+                <CardActions disableSpacing className='flex justify-end'>
+                  <IconButton aria-label="delete" onClick={() => handleDeleteNote(note.id)}>
+                    <DeleteIcon className='text-yellow-400 dark:text-gray-100' />
+                  </IconButton>
+                  <IconButton aria-label="edit" onClick={() => handleEditClick(note)}>
+                    <EditIcon className='text-yellow-400 dark:text-gray-100' />
+                  </IconButton>
+                  <IconButton aria-label="reminder">
+                    <AlarmIcon className='text-yellow-400 dark:text-gray-100' />
+                  </IconButton>
 
-              <CardActions disableSpacing className='flex justify-end'>
-                <IconButton aria-label="delete" onClick={() => deleteNote(note.id)}>
-                  <DeleteIcon className='text-yellow-400 dark:text-gray-100' />
-                </IconButton>
-                <IconButton aria-label="edit" onClick={() => handleEditClick(note)}>
-                  <EditIcon className='text-yellow-400 dark:text-gray-100' />
-                </IconButton>
-                <IconButton aria-label="reminder">
-                  <AlarmIcon className='text-yellow-400 dark:text-gray-100' />
-                </IconButton>
-                <IconButton aria-label="pin">
-                  <PinIcon className='text-yellow-400 dark:text-gray-100' />
-                </IconButton>
-              </CardActions>
-            </Card>
-          ))
-        ) : (
-          null
-        )}
+                  {isPinned(note.id) ? (
+                    <IconButton aria-label="unpin" onClick={() => unpinNote(note.id)}>
+                      <PinOffIcon className='text-yellow-400 dark:text-gray-100' />
+                    </IconButton>
+                  ) : (
+                    <IconButton aria-label="pin" onClick={() => pinNote(note.id)}>
+                      <PinIcon className='text-yellow-400 dark:text-gray-100' />
+                    </IconButton>
+                  )}
+                </CardActions>
+              </Card>
+            ) : null
+          )
+        ) : null}
       </div>
+
 
       {/* Edit Note Dialog */}
       <Dialog open={isEditing} onClose={handleCloseEdit}>
@@ -206,6 +215,7 @@ const NotesCard: React.FC<NotesCardProps> = ({ notes, withImage, deleteNote, edi
           <Button onClick={handleSaveEdit}>Save</Button>
         </DialogActions>
       </Dialog>
+
     </>
   );
 };
