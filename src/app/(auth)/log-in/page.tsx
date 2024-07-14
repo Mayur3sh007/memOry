@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/utils/cn";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Switch } from "@/components/ui/switch";
 
@@ -23,7 +23,7 @@ const LoginPage = () => {
     const savedPassword = localStorage.getItem("password");
     if (savedEmail) {
       setEmail(savedEmail);
-      setPassword(savedPassword);
+      setPassword(savedPassword || "");
     }
   }, []);
 
