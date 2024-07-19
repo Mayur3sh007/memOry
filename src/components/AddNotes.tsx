@@ -34,6 +34,7 @@ const AddNotes = () => {
             ImageURL: uploadedImageURL,
             userID: uid,
             CreatedAt: new Date().toISOString(),
+            reminderTime:null
         };
         
         const noteRef = collection(db, "Notes");

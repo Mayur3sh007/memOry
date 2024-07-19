@@ -14,7 +14,7 @@ type Note = {
 };
 
 const AllNotes: React.FC = () => {
-  const { uid} = useUser();
+  const { uid } = useUser();
   const { notes, isPinChanged } = useNotes();
   const [Notes, setNotes] = useState<Note[]>([]);
 
@@ -24,6 +24,7 @@ const AllNotes: React.FC = () => {
       return;
     }
 
+    {/* Fetching Notes */ }
     try {
       const notesCollection = collection(db, 'Notes');
       const q = query(notesCollection, where('userID', '==', uid));
@@ -41,8 +42,9 @@ const AllNotes: React.FC = () => {
   useEffect(() => {
     fetchNotes();
     console.log("AllNotes");
-  }, [uid,notes]);  //refresh notes when uid changes i.e user refreshes page && whenever theres somekinda changes in notes
+  }, [uid, notes]);  //refresh notes when uid changes i.e user refreshes page && whenever theres somekinda changes in notes
 
+  {/* Changing Notes */ }
   const editNote = async (id: string, title: string, content: string, image: string | null) => {
     try {
       const noteRef = doc(db, 'Notes', id);
@@ -56,28 +58,29 @@ const AllNotes: React.FC = () => {
       console.error('Error editing note: ', error);
     }
   };
-
   const deleteNote = async (id: string) => {
     try {
       const noteRef = doc(db, 'Notes', id);
       await deleteDoc(noteRef);
+
       fetchNotes();
     } catch (error) {
       console.error('Error deleting note: ', error);
     }
   };
 
-  const pinNote = async (id : string) => {
+  {/* Pinning Notes */ }
+  const pinNote = async (id: string) => {
     try {
       // Retrieve the current array of pinned note IDs from local storage
       const pinnedNotes = JSON.parse(localStorage.getItem('PinnedNotesId') || '[]');
-      
+
       // Append the new ID to the array
       pinnedNotes.push(id);
-      
+
       // Save the updated array back to local storage
       localStorage.setItem('PinnedNotesId', JSON.stringify(pinnedNotes));
-      
+
       // Fetch notes if necessary
       fetchNotes();
 
@@ -86,35 +89,73 @@ const AllNotes: React.FC = () => {
       console.error('Error pinning note: ', error);
     }
   };
-
-  const unpinNote = async (id : string) => {
+  const unpinNote = async (id: string) => {
     try {
       // Retrieve the current array of pinned note IDs from local storage
       const pinnedNotes = JSON.parse(localStorage.getItem('PinnedNotesId') || '[]');
-      
+
       // Remove the ID from the array
       pinnedNotes.splice(pinnedNotes.indexOf(id), 1);
-      
+
       // Save the updated array back to local storage
       localStorage.setItem('PinnedNotesId', JSON.stringify(pinnedNotes));
-      
+
       // Fetch notes if necessary
       fetchNotes();
     } catch (error) {
       console.error('Error unpinning note: ', error);
     }
   };
-
-  const isPinned = (id : string) => {
+  const isPinned = (id: string) => {
     // Retrieve the current array of pinned note IDs from local storage
     const pinnedNotes = JSON.parse(localStorage.getItem('PinnedNotesId') || '[]');
-    
+
     // Check if the note ID is in the array
     return pinnedNotes.includes(id);
   };
-  
+
+  {/* Reminders */ }
+  const setReminder = async (id: string, time: string) => {
+    try {
+      const noteRef = doc(db, 'Notes', id);
+      await updateDoc(noteRef, {
+        reminderTime: time,
+      });
+      fetchNotes();
+      scheduleNotification(id, time);
+    } catch (error) {
+      console.error('Error setting reminder: ', error);
+    }
+  };
+
+  const scheduleNotification = (id: string, time: string) => {
+    const now = new Date().getTime();
+    const reminderTime = new Date(time).getTime();
+    const timeUntilReminder = reminderTime - now;
+
+    if (timeUntilReminder > 0) {
+      setTimeout(() => {
+        showNotification(id);
+      }, timeUntilReminder);
+    }
+  };
+
+  const showNotification = (id: string) => {
+    const note = Notes.find(note => note.id === id);
+    if (note && Notification.permission === "granted") {
+      new Notification(note.Title, { body: note.Content });
+    }
+  };
+
+  useEffect(() => {
+    if (Notification.permission !== "granted") {
+      Notification.requestPermission();
+    }
+  }, []);
 
 
+
+  {/* Filtering Notes */ }
   const notesWithImages = Notes.filter(note => note.ImageURL !== null);
   const notesWithOutImages = Notes.filter(note => note.ImageURL === null);
 
@@ -122,12 +163,12 @@ const AllNotes: React.FC = () => {
     return (
       <>
         <h1 className="text-center text-2xl font-bold">All Notes</h1>
-        <NotesCard notes={notesWithOutImages}  withImage={false} deleteNote={deleteNote} editNote={editNote} pinNote={pinNote} unpinNote={unpinNote} isPinned={isPinned} />
-        <NotesCard notes={notesWithImages}  withImage={true} deleteNote={deleteNote} editNote={editNote} pinNote={pinNote} unpinNote={unpinNote} isPinned={isPinned} />
+        <NotesCard notes={notesWithOutImages} withImage={false} deleteNote={deleteNote} editNote={editNote} pinNote={pinNote} unpinNote={unpinNote} isPinned={isPinned} setReminder={setReminder} />
+        <NotesCard notes={notesWithImages} withImage={true} deleteNote={deleteNote} editNote={editNote} pinNote={pinNote} unpinNote={unpinNote} isPinned={isPinned} setReminder={setReminder} />
       </>
     )
   }
-  
+
 };
 
 export default AllNotes;

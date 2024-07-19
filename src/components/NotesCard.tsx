@@ -19,6 +19,7 @@ import Button from '@mui/material/Button';
 import { IconPhoto } from '@tabler/icons-react';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { storage } from '@/config/firebase';
+import ReminderDialog from './ReminderDailouge';
 import { useUser } from '@/providers/UserContext';
 
 type Note = {
@@ -27,6 +28,7 @@ type Note = {
   Content: string;
   ImageURL: string | null;
   CreatedAt: string;
+  reminderTime?: string;
 };
 
 type NotesCardProps = {
@@ -37,15 +39,18 @@ type NotesCardProps = {
   pinNote: (id: string) => void;
   unpinNote: (id: string) => void;
   isPinned: (id: string) => boolean;
+  setReminder: (id: string, time: string) => void;
 };
 
-const NotesCard: React.FC<NotesCardProps> = ({ notes, withImage, deleteNote, editNote, pinNote, unpinNote, isPinned }) => {
+const NotesCard: React.FC<NotesCardProps> = ({ notes, withImage, deleteNote, editNote, pinNote, unpinNote, isPinned, setReminder }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editingNote, setEditingNote] = useState<Note | null>(null);
   const [editTitle, setEditTitle] = useState('');
   const [editContent, setEditContent] = useState('');
   const [img, setImg] = useState<File | null>(null);
   const [imageURL, setImageURL] = useState<string | null>(null);
+  const [isReminderDialogOpen, setIsReminderDialogOpen] = useState(false);
+  const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null);
   const { uid } = useUser();
 
   const handleEditClick = (note: Note) => {
@@ -90,6 +95,18 @@ const NotesCard: React.FC<NotesCardProps> = ({ notes, withImage, deleteNote, edi
 
   const handleDeleteNote = async (id: string) => {
     deleteNote(id);
+  };
+
+  const handleReminderClick = (noteId: string) => {
+    setSelectedNoteId(noteId);
+    setIsReminderDialogOpen(true);
+  };
+
+  const handleSetReminder = (time: string) => {
+    if (selectedNoteId) {
+      setReminder(selectedNoteId, time);
+    }
+    setIsReminderDialogOpen(false);
   };
 
   return (
@@ -152,7 +169,7 @@ const NotesCard: React.FC<NotesCardProps> = ({ notes, withImage, deleteNote, edi
                   <IconButton aria-label="edit" onClick={() => handleEditClick(note)}>
                     <EditIcon className='text-yellow-400 dark:text-gray-100' />
                   </IconButton>
-                  <IconButton aria-label="reminder">
+                  <IconButton aria-label="reminder" onClick={() => handleReminderClick(note.id)}>
                     <AlarmIcon className='text-yellow-400 dark:text-gray-100' />
                   </IconButton>
 
@@ -215,7 +232,12 @@ const NotesCard: React.FC<NotesCardProps> = ({ notes, withImage, deleteNote, edi
           <Button onClick={handleSaveEdit}>Save</Button>
         </DialogActions>
       </Dialog>
-
+      
+      <ReminderDialog
+        open={isReminderDialogOpen}
+        onClose={() => setIsReminderDialogOpen(false)}
+        onSetReminder={handleSetReminder}
+      />
     </>
   );
 };
