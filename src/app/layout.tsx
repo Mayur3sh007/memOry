@@ -8,8 +8,8 @@ import 'react-toastify/dist/ReactToastify.css';
 const robotoSerif = Roboto_Serif({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Todo List",
-  description: "Todo List",
+  title: "MEMO-ry",
+  description: "Multipurpose Memo App",
   icons: {
     icon: "/next.svg",
     shortcut: "/favicon-16x16.png",

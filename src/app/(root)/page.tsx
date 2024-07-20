@@ -6,6 +6,7 @@ import { UserProvider, useUser } from "@/providers/UserContext";
 import { NotesProvider, useNotes } from "@/providers/NotesContext";
 import AllNotes from "@/components/AllNotes";
 import PinnedNotes from "@/components/PinnedNotes";
+import MainSideBar from "@/components/MainSideBar";
 
 export default function Home() {
   return (
@@ -32,11 +33,15 @@ const AppContent = () => {
   return (
     <div className="flex w-screen min-h-screen">
       <Header />
-      <div className="flex flex-col w-full h-full mt-10 space-y-10 px-4">
-        <div>
+
+      <div className="hidden lg:flex">
+        <MainSideBar />
+      </div>
+      <div className="flex flex-grow flex-col w-full h-full mt-16 px-4 space-y-10 overflow-y-auto justify-center items-center">
+        <div className="w-full max-w-4xl">
           <AddNotes />
         </div>
-        <div className="flex flex-col justify-center gap-4 mt-4">
+        <div className="flex flex-col justify-center gap-4 w-full max-w-4xl mt-4">
           <PinnedNotes />
           <AllNotes />
         </div>

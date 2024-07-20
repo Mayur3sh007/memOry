@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useUser } from '@/providers/UserContext';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/config/firebase';
-import NotesCard from './NotesCard';
 import PinnedNotesCard from './PinnedNotesCard';
 import { useNotes } from '@/providers/NotesContext';
 

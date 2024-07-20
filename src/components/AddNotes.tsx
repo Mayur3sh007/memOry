@@ -91,16 +91,10 @@ const AddNotes = () => {
                             <img src={imageURL} alt="Preview" className="w-full rounded" />
                         </div>
                     )}
-                    <div className="flex justify-between mt-3">
-                        <div className="flex space-x-2 text-black dark:text-white">
-                            <button onClick={() => console.log('Set reminder')}>
-                                <IconAlarm />
-                            </button>
+                    <div className="flex justify-between mt-3 ml-4 ">
+                        <div className="flex space-x-4 text-black dark:text-white">
                             <button onClick={() => console.log('Add collaborator')}>
                                 <IconUsers />
-                            </button>
-                            <button onClick={() => console.log('Change color')}>
-                                <IconPalette />
                             </button>
                             <label className="cursor-pointer">
                                 <input type="file" accept="image/*" hidden onChange={addImage} />
