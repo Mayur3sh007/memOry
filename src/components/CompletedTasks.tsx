@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import { useUser } from '@/providers/UserContext';
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import { collection, query, where, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '@/config/firebase';
 import NotesCard from './NotesCard';
 import { useNotes } from '@/providers/NotesContext';
@@ -50,6 +50,16 @@ const CompletedTasks: React.FC = () => {
   const NoteswithImage = completedNotes.filter(note => note.ImageURL);
   const NoteswithoutImage = completedNotes.filter(note => !note.ImageURL);
 
+  const deleteNote = async (id: string) => {
+    try {
+      const noteRef = doc(db, 'Notes', id);
+      await deleteDoc(noteRef);
+      fetchNotes();
+    } catch (error) {
+      console.error('Error deleting note: ', error);
+    }
+  };
+
   return (
     <>
       {completedNotes.length > 0 && (
@@ -58,7 +68,7 @@ const CompletedTasks: React.FC = () => {
           <NotesCard 
             notes={NoteswithoutImage} 
             withImage={false}
-            deleteNote={async () => {}} 
+            deleteNote={deleteNote}
             editNote={async () => {}} 
             pinNote={async () => {}} 
             unpinNote={async () => {}} 
@@ -69,7 +79,7 @@ const CompletedTasks: React.FC = () => {
           <NotesCard 
             notes={NoteswithImage}
             withImage={true}
-            deleteNote={async () => {}} 
+            deleteNote={deleteNote}
             editNote={async () => {}} 
             pinNote={async () => {}} 
             unpinNote={async () => {}} 

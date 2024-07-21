@@ -174,9 +174,6 @@ const NotesCard: React.FC<NotesCardProps> = ({ notes, withImage, deleteNote, edi
                         <CheckIcon className='text-yellow-400 dark:text-gray-100' />
                       </IconButton>
 
-                      <IconButton aria-label="delete" onClick={() => handleDeleteNote(note.id)}>
-                        <DeleteIcon className='text-yellow-400 dark:text-gray-100' />
-                      </IconButton>
                       <IconButton aria-label="edit" onClick={() => handleEditClick(note)}>
                         <EditIcon className='text-yellow-400 dark:text-gray-100' />
                       </IconButton>
@@ -186,6 +183,10 @@ const NotesCard: React.FC<NotesCardProps> = ({ notes, withImage, deleteNote, edi
                     </>
 
                   )}
+                      <IconButton aria-label="delete" onClick={() => handleDeleteNote(note.id)}>
+                        <DeleteIcon className='text-yellow-400 dark:text-gray-100' />
+                      </IconButton>
+
                   {note.completed === false && (
                     isPinned(note.id) ? (
                       <IconButton aria-label="unpin" onClick={() => unpinNote(note.id)}>

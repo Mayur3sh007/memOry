@@ -13,6 +13,7 @@ type Note = {
   CreatedAt: string;
   scheduleTime: string;
   completed: boolean;
+  completedAt: string | null;
 };
 
 const AllNotes: React.FC = () => {
@@ -134,6 +135,8 @@ const AllNotes: React.FC = () => {
       const noteRef = doc(db, 'Notes', id);
       await updateDoc(noteRef, {
         completed: true,
+        scheduleTime : null,
+        completedAt : new Date().toISOString(),
       });
       fetchNotes();
     } catch (error) {

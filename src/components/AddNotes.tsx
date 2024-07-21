@@ -66,7 +66,9 @@ const AddNotes = () => {
             userID: uid,
             CreatedAt: new Date().toISOString(),
             scheduleTime: scheduleTime.toISOString(),
+            reminderTime: null,
             completed: false,
+            completedAt: null,
         };
 
         const noteRef = collection(db, "Notes");
