@@ -1,31 +1,10 @@
 "use client";
-import Header from "@/components/Header";
-import { ThemeProvider } from "next-themes";
 import AddNotes from "@/components/AddNotes";
-import { UserProvider, useUser } from "@/providers/UserContext";
-import { NotesProvider, useNotes } from "@/providers/NotesContext";
+import { useUser } from "@/providers/UserContext";
 import AllNotes from "@/components/AllNotes";
 import PinnedNotes from "@/components/PinnedNotes";
-import MainSideBar from "@/components/MainSideBar";
 
-export default function Home() {
-  return (
-    <UserProvider>
-      <NotesProvider>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <AppContent />
-        </ThemeProvider>
-      </NotesProvider>
-    </UserProvider>
-  );
-}
-
-const AppContent = () => {
+const Home = () => {
   const { loading } = useUser();
 
   if (loading) return <div>Loading...</div>;
@@ -33,15 +12,7 @@ const AppContent = () => {
   return (
     <div className="flex w-screen min-h-screen">
 
-      <div className="hidden max-md:flex w-[50px]">
-        <Header/>
-      </div>
-
-      <div className="hidden lg:flex">
-        <MainSideBar />
-      </div>
-
-      <div className="flex flex-grow flex-col w-full h-full mt-5 px-4 space-y-10 overflow-y-auto justify-center items-center -ml-10">
+      <div className="flex flex-grow flex-col w-full h-full mt-8 px-4 space-y-10 overflow-y-auto justify-center items-center -ml-10 lg:ml-10">
 
         <div className="w-full max-w-4xl">
           <AddNotes />
@@ -50,8 +21,10 @@ const AppContent = () => {
           <PinnedNotes />
           <AllNotes />
         </div>
-        
+
       </div>
     </div>
   );
 };
+
+export default Home;

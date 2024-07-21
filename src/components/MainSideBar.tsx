@@ -42,7 +42,7 @@ const MainSideBar = () => {
     >
       <ul className="space-y-6 px-2 mt-6 flex flex-col items-center">
         <li className="rounded-sm w-full">
-          <a href="#" className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full">
+          <a href="/" className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full">
             <AssignmentIcon className="w-6 h-6 text-yellow-400" />
             {isHovered && <span className="ml-2 text-black dark:text-white">My Tasks</span>}
           </a>
@@ -54,7 +54,7 @@ const MainSideBar = () => {
           </a>
         </li>
         <li className="rounded-sm w-full">
-          <a href="#" className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full">
+          <a href="/completed-tasks" className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full">
             <CheckCircleIcon className="w-6 h-6 text-yellow-400" />
             {isHovered && <span className="ml-2 text-black dark:text-white">Completed Tasks</span>}
           </a>

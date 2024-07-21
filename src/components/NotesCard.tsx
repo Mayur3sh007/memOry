@@ -8,8 +8,7 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import AlarmIcon from '@mui/icons-material/Alarm';
-import { PinIcon, PinOffIcon } from 'lucide-react';
+import { CheckIcon, PinIcon, PinOffIcon } from 'lucide-react';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -21,6 +20,7 @@ import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { storage } from '@/config/firebase';
 import ReminderDialog from './ReminderDailouge';
 import { useUser } from '@/providers/UserContext';
+import { NotificationAdd } from '@mui/icons-material';
 
 type Note = {
   id: string;
@@ -29,6 +29,8 @@ type Note = {
   ImageURL: string | null;
   CreatedAt: string;
   reminderTime?: string;
+  scheduleTime: string;
+  completed: boolean;
 };
 
 type NotesCardProps = {
@@ -40,9 +42,11 @@ type NotesCardProps = {
   unpinNote: (id: string) => void;
   isPinned: (id: string) => boolean;
   setReminder: (id: string, time: string) => void;
+  handleCompleteTask: (id: string) => void; // Add this line
 };
 
-const NotesCard: React.FC<NotesCardProps> = ({ notes, withImage, deleteNote, editNote, pinNote, unpinNote, isPinned, setReminder }) => {
+
+const NotesCard: React.FC<NotesCardProps> = ({ notes, withImage, deleteNote, editNote, pinNote, unpinNote, isPinned, setReminder, handleCompleteTask }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editingNote, setEditingNote] = useState<Note | null>(null);
   const [editTitle, setEditTitle] = useState('');
@@ -129,7 +133,8 @@ const NotesCard: React.FC<NotesCardProps> = ({ notes, withImage, deleteNote, edi
                 <CardHeader
                   className='font-bold text-xl text-yellow-400 dark:text-white'
                   title={note.Title}
-                  subheader={new Date(note.CreatedAt).toLocaleDateString()}
+                  subheader={`Scheduled for ${new Date(note.scheduleTime).toLocaleDateString()}`}
+
                 />
                 {note.ImageURL && (
                   <CardMedia
@@ -163,25 +168,38 @@ const NotesCard: React.FC<NotesCardProps> = ({ notes, withImage, deleteNote, edi
                 </CardContent>
 
                 <CardActions disableSpacing className='flex justify-end'>
-                  <IconButton aria-label="delete" onClick={() => handleDeleteNote(note.id)}>
-                    <DeleteIcon className='text-yellow-400 dark:text-gray-100' />
-                  </IconButton>
-                  <IconButton aria-label="edit" onClick={() => handleEditClick(note)}>
-                    <EditIcon className='text-yellow-400 dark:text-gray-100' />
-                  </IconButton>
-                  <IconButton aria-label="reminder" onClick={() => handleReminderClick(note.id)}>
-                    <AlarmIcon className='text-yellow-400 dark:text-gray-100' />
-                  </IconButton>
+                  {note.completed === false && (
+                    <>
+                      <IconButton aria-label="complete" onClick={() => handleCompleteTask(note.id)}>
+                        <CheckIcon className='text-yellow-400 dark:text-gray-100' />
+                      </IconButton>
 
-                  {isPinned(note.id) ? (
-                    <IconButton aria-label="unpin" onClick={() => unpinNote(note.id)}>
-                      <PinOffIcon className='text-yellow-400 dark:text-gray-100' />
-                    </IconButton>
-                  ) : (
-                    <IconButton aria-label="pin" onClick={() => pinNote(note.id)}>
-                      <PinIcon className='text-yellow-400 dark:text-gray-100' />
-                    </IconButton>
+                      <IconButton aria-label="delete" onClick={() => handleDeleteNote(note.id)}>
+                        <DeleteIcon className='text-yellow-400 dark:text-gray-100' />
+                      </IconButton>
+                      <IconButton aria-label="edit" onClick={() => handleEditClick(note)}>
+                        <EditIcon className='text-yellow-400 dark:text-gray-100' />
+                      </IconButton>
+                      <IconButton aria-label="reminder" onClick={() => handleReminderClick(note.id)}>
+                        <NotificationAdd className='text-yellow-400 dark:text-gray-100' />
+                      </IconButton>
+                    </>
+
                   )}
+                  {note.completed === false && (
+                    isPinned(note.id) ? (
+                      <IconButton aria-label="unpin" onClick={() => unpinNote(note.id)}>
+                        <PinOffIcon className='text-yellow-400 dark:text-gray-100' />
+                      </IconButton>
+                    ) : (
+                      <IconButton aria-label="pin" onClick={() => pinNote(note.id)}>
+                        <PinIcon className='text-yellow-400 dark:text-gray-100' />
+                      </IconButton>
+                    )
+                  )}
+
+
+
                 </CardActions>
               </Card>
             ) : null
@@ -232,7 +250,7 @@ const NotesCard: React.FC<NotesCardProps> = ({ notes, withImage, deleteNote, edi
           <Button onClick={handleSaveEdit}>Save</Button>
         </DialogActions>
       </Dialog>
-      
+
       <ReminderDialog
         open={isReminderDialogOpen}
         onClose={() => setIsReminderDialogOpen(false)}

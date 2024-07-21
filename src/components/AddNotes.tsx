@@ -1,10 +1,13 @@
-import React, { useState, ChangeEvent, useEffect } from 'react';
+import React, { useState, ChangeEvent } from 'react';
 import { useNotes } from '@/providers/NotesContext';
 import { useUser } from '@/providers/UserContext';
 import { addDoc, collection } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '@/config/firebase';
-import { IconAlarm, IconPalette, IconPhoto, IconUsers } from '@tabler/icons-react';
+import { IconPhoto } from '@tabler/icons-react';
+import 'react-datepicker/dist/react-datepicker.css';
+import SimpleDateTimePicker from './SimpleDateTimePicker';
+import { toast } from 'react-toastify';
 
 const AddNotes = () => {
     const [title, setTitle] = useState('');
@@ -12,14 +15,42 @@ const AddNotes = () => {
     const [img, setImg] = useState<File | null>(null);
     const [imageURL, setImageURL] = useState<string | null>(null);
     const [isOpen, setIsOpen] = useState(false);
+    const [scheduleTime, setScheduleTime] = useState<Date | null>(null);
     const { uid } = useUser();
     const { addNote } = useNotes();
+
+    const handleDateTimeChange = (dateTime: Date) => {
+
+        if(dateTime < new Date()) {
+            toast.error("Please select a date in the future",{
+                position: "top-center",
+            });
+            return;
+        }
+
+        setScheduleTime(dateTime);
+        console.log(scheduleTime);
+    };
 
     const handleSave = async () => {
         if (!uid) {
             console.error("User is not logged in");
             return;
         }
+        
+        if(!title) {
+            toast.error("Title is not set"),{
+                position: "top-center",
+            };
+            return;
+        }
+        if (!scheduleTime) {
+            toast.error("Reminder time is not set"),{
+                position: "top-center",
+            };
+            return;
+        }
+
 
         let uploadedImageURL = null;
         if (img) {
@@ -34,19 +65,30 @@ const AddNotes = () => {
             ImageURL: uploadedImageURL,
             userID: uid,
             CreatedAt: new Date().toISOString(),
-            reminderTime:null
+            scheduleTime: scheduleTime.toISOString(),
+            completed: false,
         };
-        
+
         const noteRef = collection(db, "Notes");
         await addDoc(noteRef, noteData);
 
         addNote(title, uploadedImageURL, content);
-        
+
         // Reset form fields
         setTitle('');
         setContent('');
         setImg(null);
         setImageURL(null);
+        setScheduleTime(null);
+        setIsOpen(false);
+    };
+
+    const handleCancel = () => {
+        setTitle('');
+        setContent('');
+        setImg(null);
+        setImageURL(null);
+        setScheduleTime(null);
         setIsOpen(false);
     };
 
@@ -57,14 +99,6 @@ const AddNotes = () => {
             setImageURL(URL.createObjectURL(file));
         }
     };
-
-    const handleCancel = () => {
-        setTitle('');
-        setContent('');
-        setImg(null);
-        setImageURL(null);
-        setIsOpen(false);
-    }
 
     return (
         <div className={`mx-auto mt-5 p-6 rounded-lg shadow-lg relative bg-yellow-500 ${isOpen ? 'w-96' : 'w-80'} ${isOpen ? 'h-auto' : 'h-auto'}`}>
@@ -91,17 +125,20 @@ const AddNotes = () => {
                             <img src={imageURL} alt="Preview" className="w-full rounded" />
                         </div>
                     )}
-                    <div className="flex justify-between mt-3 ml-4 ">
-                        <div className="flex space-x-4 text-black dark:text-white">
-                            <button onClick={() => console.log('Add collaborator')}>
-                                <IconUsers />
-                            </button>
+
+                    {/* Photos & DateTime */}
+                    <div className="flex items-center mt-3 flex-col space-x-4">
+                        <div className="flex space-x-4 items-center">
                             <label className="cursor-pointer">
-                                <input type="file" accept="image/*" hidden onChange={addImage} />
-                                <IconPhoto />
+                                <input type="file" accept="image/*" onChange={addImage} className="hidden" />
+                                <IconPhoto className="black dark:text-white" />
                             </label>
+                            <SimpleDateTimePicker onDateTimeChange={handleDateTimeChange} />
                         </div>
-                        <div>
+
+                        <div className="flex-grow"></div> {/* This div pushes the buttons to the bottom */}
+
+                        <div className="flex justify-end w-full mt-4 pr-4"> {/* w-full ensures the buttons are aligned right */}
                             <button onClick={handleSave} className="text-black dark:text-white bg-transparent border-none">
                                 Add
                             </button>
@@ -110,6 +147,7 @@ const AddNotes = () => {
                             </button>
                         </div>
                     </div>
+
                 </>
             )}
         </div>

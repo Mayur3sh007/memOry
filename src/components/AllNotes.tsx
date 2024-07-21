@@ -11,6 +11,8 @@ type Note = {
   Content: string;
   ImageURL: string | null;
   CreatedAt: string;
+  scheduleTime: string;
+  completed: boolean;
 };
 
 const AllNotes: React.FC = () => {
@@ -24,7 +26,6 @@ const AllNotes: React.FC = () => {
       return;
     }
 
-    {/* Fetching Notes */ }
     try {
       const notesCollection = collection(db, 'Notes');
       const q = query(notesCollection, where('userID', '==', uid));
@@ -42,9 +43,8 @@ const AllNotes: React.FC = () => {
   useEffect(() => {
     fetchNotes();
     console.log("AllNotes");
-  }, [uid, notes]);  //refresh notes when uid changes i.e user refreshes page && whenever theres somekinda changes in notes
+  }, [uid, notes]);
 
-  {/* Changing Notes */ }
   const editNote = async (id: string, title: string, content: string, image: string | null) => {
     try {
       const noteRef = doc(db, 'Notes', id);
@@ -58,63 +58,45 @@ const AllNotes: React.FC = () => {
       console.error('Error editing note: ', error);
     }
   };
+  
   const deleteNote = async (id: string) => {
     try {
       const noteRef = doc(db, 'Notes', id);
       await deleteDoc(noteRef);
-
       fetchNotes();
     } catch (error) {
       console.error('Error deleting note: ', error);
     }
   };
 
-  {/* Pinning Notes */ }
   const pinNote = async (id: string) => {
     try {
-      // Retrieve the current array of pinned note IDs from local storage
       const pinnedNotes = JSON.parse(localStorage.getItem('PinnedNotesId') || '[]');
-
-      // Append the new ID to the array
       pinnedNotes.push(id);
-
-      // Save the updated array back to local storage
       localStorage.setItem('PinnedNotesId', JSON.stringify(pinnedNotes));
-
-      // Fetch notes if necessary
       fetchNotes();
-
-      isPinChanged(); // Trigger rerender
+      isPinChanged();
     } catch (error) {
       console.error('Error pinning note: ', error);
     }
   };
+  
   const unpinNote = async (id: string) => {
     try {
-      // Retrieve the current array of pinned note IDs from local storage
       const pinnedNotes = JSON.parse(localStorage.getItem('PinnedNotesId') || '[]');
-
-      // Remove the ID from the array
       pinnedNotes.splice(pinnedNotes.indexOf(id), 1);
-
-      // Save the updated array back to local storage
       localStorage.setItem('PinnedNotesId', JSON.stringify(pinnedNotes));
-
-      // Fetch notes if necessary
       fetchNotes();
     } catch (error) {
       console.error('Error unpinning note: ', error);
     }
   };
-  const isPinned = (id: string) => {
-    // Retrieve the current array of pinned note IDs from local storage
-    const pinnedNotes = JSON.parse(localStorage.getItem('PinnedNotesId') || '[]');
 
-    // Check if the note ID is in the array
+  const isPinned = (id: string) => {
+    const pinnedNotes = JSON.parse(localStorage.getItem('PinnedNotesId') || '[]');
     return pinnedNotes.includes(id);
   };
 
-  {/* Reminders */ }
   const setReminder = async (id: string, time: string) => {
     try {
       const noteRef = doc(db, 'Notes', id);
@@ -147,26 +129,52 @@ const AllNotes: React.FC = () => {
     }
   };
 
+  const handleCompleteTask = async (id: string) => {
+    try {
+      const noteRef = doc(db, 'Notes', id);
+      await updateDoc(noteRef, {
+        completed: true,
+      });
+      fetchNotes();
+    } catch (error) {
+      console.error('Error completing task: ', error);
+    }
+  };
+
   useEffect(() => {
     if (Notification.permission !== "granted") {
       Notification.requestPermission();
     }
   }, []);
 
-
-
-  {/* Filtering Notes */ }
-  const notesWithImages = Notes.filter(note => note.ImageURL !== null);
-  const notesWithOutImages = Notes.filter(note => note.ImageURL === null);
+  // Filtering Data
+  const pendingNotes = Notes.filter(note => note.completed === false);
+  const notesWithScheduleTimeTodayWithImages = pendingNotes.filter(note => (note.ImageURL !== null && (new Date(note.scheduleTime).getDate() === new Date().getDate())));
+  const notesWithScheduleTimeTodayWithoutImages = pendingNotes.filter(note => (note.ImageURL === null && (new Date(note.scheduleTime).getDate() === new Date().getDate())));
+  const notesWithImages = pendingNotes.filter(note => (note.ImageURL !== null && !(notesWithScheduleTimeTodayWithImages.includes(note))));
+  const notesWithOutImages = pendingNotes.filter(note => (note.ImageURL === null && !(notesWithScheduleTimeTodayWithoutImages.includes(note))));
+  const sortedNotesWithImages = notesWithImages.sort((a, b) => new Date(a.scheduleTime).getTime() - new Date(b.scheduleTime).getTime());
+  const sortedNotesWithOutImages = notesWithOutImages.sort((a, b) => new Date(a.scheduleTime).getTime() - new Date(b.scheduleTime).getTime());
 
   if (Notes.length > 0) {
     return (
       <>
-        <h1 className="text-center text-2xl font-bold">All Notes</h1>
-        <NotesCard notes={notesWithOutImages} withImage={false} deleteNote={deleteNote} editNote={editNote} pinNote={pinNote} unpinNote={unpinNote} isPinned={isPinned} setReminder={setReminder} />
-        <NotesCard notes={notesWithImages} withImage={true} deleteNote={deleteNote} editNote={editNote} pinNote={pinNote} unpinNote={unpinNote} isPinned={isPinned} setReminder={setReminder} />
+        {(notesWithScheduleTimeTodayWithImages.length > 0 || notesWithScheduleTimeTodayWithoutImages.length > 0) && (
+          <>
+            <h1 className="text-center text-2xl font-bold mt-4">Today's Tasks</h1>
+            <NotesCard notes={notesWithScheduleTimeTodayWithImages} withImage={true} deleteNote={deleteNote} editNote={editNote} pinNote={pinNote} unpinNote={unpinNote} isPinned={isPinned} setReminder={setReminder} handleCompleteTask={handleCompleteTask} />
+            <NotesCard notes={notesWithScheduleTimeTodayWithoutImages} withImage={false} deleteNote={deleteNote} editNote={editNote} pinNote={pinNote} unpinNote={unpinNote} isPinned={isPinned} setReminder={setReminder} handleCompleteTask={handleCompleteTask} />
+          </>
+        )}
+        {sortedNotesWithOutImages.length > 0 || sortedNotesWithImages.length > 0 && (
+          <>
+            <h1 className="text-center text-2xl font-bold mt-4">Upcoming Tasks</h1>
+            <NotesCard notes={sortedNotesWithOutImages} withImage={false} deleteNote={deleteNote} editNote={editNote} pinNote={pinNote} unpinNote={unpinNote} isPinned={isPinned} setReminder={setReminder} handleCompleteTask={handleCompleteTask} />
+            <NotesCard notes={sortedNotesWithImages} withImage={true} deleteNote={deleteNote} editNote={editNote} pinNote={pinNote} unpinNote={unpinNote} isPinned={isPinned} setReminder={setReminder} handleCompleteTask={handleCompleteTask} />
+          </>
+        )};
       </>
-    )
+    );
   }
 
 };
