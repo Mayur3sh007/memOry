@@ -32,19 +32,25 @@ const AppContent = () => {
 
   return (
     <div className="flex w-screen min-h-screen">
-      <Header />
+
+      <div className="hidden max-md:flex w-[50px]">
+        <Header/>
+      </div>
 
       <div className="hidden lg:flex">
         <MainSideBar />
       </div>
-      <div className="flex flex-grow flex-col w-full h-full mt-16 px-4 space-y-10 overflow-y-auto justify-center items-center">
+
+      <div className="flex flex-grow flex-col w-full h-full mt-5 px-4 space-y-10 overflow-y-auto justify-center items-center -ml-10">
+
         <div className="w-full max-w-4xl">
           <AddNotes />
         </div>
-        <div className="flex flex-col justify-center gap-4 w-full max-w-4xl mt-4">
+        <div className="flex flex-col justify-center gap-4 w-full mt-4">
           <PinnedNotes />
           <AllNotes />
         </div>
+        
       </div>
     </div>
   );
