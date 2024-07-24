@@ -18,7 +18,7 @@ type Note = {
   status: 'pending' | 'passed' | 'completed';
 };
 
-const CompletedTasks: React.FC = () => {
+const PassedTasks: React.FC = () => {
   const { uid } = useUser();
   const { notes } = useNotes();
   const [Notes, setNotes] = useState<Note[]>([]);
@@ -45,7 +45,7 @@ const CompletedTasks: React.FC = () => {
 
   useEffect(() => {
     fetchNotes();
-    console.log("CompletedTasks");
+    console.log("PassedTasks");
   }, [uid, notes]);
 
   const deleteNote = async (id: string) => {
@@ -59,7 +59,7 @@ const CompletedTasks: React.FC = () => {
   };
 
   // Filtering Completed Tasks
-  const completedNotes = Notes.filter(note => note.status === 'completed');
+  const completedNotes = Notes.filter(note => note.status === 'passed');
   const NoteswithImage = completedNotes.filter(note => note.ImageURL) as Note[];
   const NoteswithoutImage = completedNotes.filter(note => !note.ImageURL) as Note[];
 
@@ -68,7 +68,7 @@ const CompletedTasks: React.FC = () => {
     <>
       {completedNotes.length > 0 && (
         <>
-          <h1 className="text-center text-2xl font-bold mt-16">Completed Tasks</h1>
+          <h1 className="text-center text-2xl font-bold mt-16">Passed Tasks</h1>
           <NotesCard 
             notes={NoteswithoutImage} 
             withImage={false}
@@ -97,4 +97,4 @@ const CompletedTasks: React.FC = () => {
   );
 };
 
-export default CompletedTasks;
+export default PassedTasks;

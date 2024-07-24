@@ -30,7 +30,7 @@ type Note = {
   CreatedAt: string;
   reminderTime?: string;
   scheduleTime: string;
-  completed: boolean;
+  status: 'pending' | 'passed' | 'completed';
 };
 
 type NotesCardProps = {
@@ -168,7 +168,7 @@ const NotesCard: React.FC<NotesCardProps> = ({ notes, withImage, deleteNote, edi
                 </CardContent>
 
                 <CardActions disableSpacing className='flex justify-end'>
-                  {note.completed === false && (
+                  {note.status === 'pending' && (
                     <>
                       <IconButton aria-label="complete" onClick={() => handleCompleteTask(note.id)}>
                         <CheckIcon className='text-yellow-400 dark:text-gray-100' />
@@ -187,7 +187,7 @@ const NotesCard: React.FC<NotesCardProps> = ({ notes, withImage, deleteNote, edi
                         <DeleteIcon className='text-yellow-400 dark:text-gray-100' />
                       </IconButton>
 
-                  {note.completed === false && (
+                  {note.status === 'pending' && (
                     isPinned(note.id) ? (
                       <IconButton aria-label="unpin" onClick={() => unpinNote(note.id)}>
                         <PinOffIcon className='text-yellow-400 dark:text-gray-100' />

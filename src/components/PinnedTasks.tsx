@@ -13,7 +13,7 @@ type Note = {
     CreatedAt: string;
 };
 
-const PinnedNotes: React.FC = () => {
+const PinnedTasks: React.FC = () => {
     const { uid } = useUser();
     const { isPinChanged } = useNotes();
     const [pinnedNotes, setPinnedNotes] = useState<Note[]>([]);
@@ -49,7 +49,7 @@ const PinnedNotes: React.FC = () => {
 
     useEffect(() => {
         fetchPinnedNotes();
-        console.log("PinnedNotes")
+        console.log("PinnedTasks")
     }, [uid,isPinChanged]);
 
     const unpinNote = async (id: string) => {
@@ -92,4 +92,4 @@ const PinnedNotes: React.FC = () => {
     );
 };
 
-export default PinnedNotes;
+export default PinnedTasks;

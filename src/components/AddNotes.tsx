@@ -29,7 +29,7 @@ const AddNotes = () => {
         }
 
         setScheduleTime(dateTime);
-        console.log(scheduleTime);
+        // console.log(scheduleTime);
     };
 
     const handleSave = async () => {
@@ -60,15 +60,15 @@ const AddNotes = () => {
         }
 
         const noteData = {
+            userID: uid,
             Title: title,
             Content: content,
             ImageURL: uploadedImageURL,
-            userID: uid,
             CreatedAt: new Date().toISOString(),
             scheduleTime: scheduleTime.toISOString(),
             reminderTime: null,
-            completed: false,
             completedAt: null,
+            status:'pending',
         };
 
         const noteRef = collection(db, "Notes");
@@ -118,7 +118,7 @@ const AddNotes = () => {
                     <textarea
                         className="w-full bg-white dark:bg-gray-100 mt-2 p-2 rounded resize-none focus:outline-none text-black"
                         rows={isOpen ? 4 : 1}
-                        placeholder="Take a note..."
+                        placeholder="Add Description..."
                         value={content}
                         onChange={(e) => setContent(e.target.value)}
                     />

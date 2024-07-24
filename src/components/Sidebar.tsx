@@ -13,6 +13,8 @@ import {
   FitnessCenter as FitnessCenterIcon,
   CheckCircle as CheckCircleIcon,
   ExitToApp as ExitToAppIcon,
+  DateRangeOutlined,
+  DateRange,
 } from '@mui/icons-material';
 
 const Sidebar = () => {
@@ -29,7 +31,7 @@ const Sidebar = () => {
     try {
       await signOut(auth);
       router.push("/sign-up");
-    } catch (error : any) {
+    } catch (error: any) {
       console.error("Logout Error:", error.message);
     }
   };
@@ -39,7 +41,7 @@ const Sidebar = () => {
       <Sheet>
 
         <SheetTrigger asChild className='cursor-pointer q'>
-            <MenuIcon />
+          <MenuIcon />
         </SheetTrigger>
 
         <SheetContent className='flex flex-col h-full w-[40%]' side='left'>
@@ -49,7 +51,7 @@ const Sidebar = () => {
               <ul className="pt-2 pb-4 space-y-6 text-sm w-full">
                 <li className="rounded-sm w-full">
                   <a
-                    href="#"
+                    href="/"
                     className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full"
                   >
                     <AssignmentIcon className="w-6 h-6 text-yellow-400" />
@@ -67,10 +69,19 @@ const Sidebar = () => {
                 </li>
                 <li className="rounded-sm w-full">
                   <a
-                    href="#"
+                    href="/completed-tasks"
                     className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full"
                   >
                     <CheckCircleIcon className="w-6 h-6 text-yellow-400" />
+                    <span className="text-black dark:text-white">Completed Tasks</span>
+                  </a>
+                </li>
+                <li className="rounded-sm w-full">
+                  <a
+                    href="/passed-tasks"
+                    className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full"
+                  >
+                    <DateRange className="w-6 h-6 text-yellow-400" />
                     <span className="text-black dark:text-white">Completed Tasks</span>
                   </a>
                 </li>
@@ -79,9 +90,9 @@ const Sidebar = () => {
           </div>
 
           {/* Theme Toggle Switch */}
-          <div className="fixed bottom-20 flex flex-row items-center mt-4">
+          <div className="fixed bottom-20 flex flex-row items-center mt-4 hover:bg-gray-200 dark:hover:bg-yellow-600">
             <ModeToggle />
-            <span className="ml-2 text-black dark:text-white">
+            <span className="ml-2 text-black dark:text-white ">
               {theme.charAt(0).toUpperCase() + theme.slice(1)} Mode
             </span>
           </div>

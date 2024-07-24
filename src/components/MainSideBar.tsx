@@ -3,7 +3,8 @@ import {
   Assignment as AssignmentIcon,
   FitnessCenter as FitnessCenterIcon,
   CheckCircle as CheckCircleIcon,
-  ExitToApp as ExitToAppIcon
+  ExitToApp as ExitToAppIcon,
+  DateRange
 } from '@mui/icons-material';
 import { useUser } from '@/providers/UserContext';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
@@ -59,13 +60,23 @@ const MainSideBar = () => {
             {isHovered && <span className="ml-2 text-black dark:text-white">Completed Tasks</span>}
           </a>
         </li>
+        <li className="rounded-sm w-full">
+          <a
+            href="/passed-tasks"
+            className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full"
+          >
+            <DateRange className="w-6 h-6 text-yellow-400" />
+            {isHovered && <span className="ml-2 text-black dark:text-white">Passed Tasks</span>}
+          </a>
+        </li>
       </ul>
 
-      
+
       <div className={`fixed bottom-14 left-2 flex flex-row items-center 
         ${isHovered ? 'w-[220px]' : 'w-[60px]'} overflow-hidden
-        hover:bg-gray-200 dark:hover:bg-yellow-600`}
-        >
+         p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600`
+        }
+      >
         <ModeToggle />
         {isHovered && (
           <span className="ml-2 text-black dark:text-white">
