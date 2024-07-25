@@ -4,7 +4,11 @@ import {
   FitnessCenter as FitnessCenterIcon,
   CheckCircle as CheckCircleIcon,
   ExitToApp as ExitToAppIcon,
-  DateRange
+  DateRange,
+  Today,
+  Weekend,
+  InsertInvitation,
+  DoneAll
 } from '@mui/icons-material';
 import { useUser } from '@/providers/UserContext';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
@@ -13,6 +17,7 @@ import { signOut } from 'firebase/auth';
 import { auth } from '@/config/firebase';
 import { ModeToggle } from './theme-switch';
 import { useTheme } from 'next-themes';
+import { HistoryIcon } from 'lucide-react';
 
 const MainSideBar = () => {
   const [isHovered, setIsHovered] = useState(false);
@@ -42,33 +47,58 @@ const MainSideBar = () => {
       onMouseLeave={() => setIsHovered(false)}
     >
       <ul className="space-y-6 px-2 mt-6 flex flex-col items-center">
+        {/* All Tasks */}
         <li className="rounded-sm w-full">
           <a href="/" className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full">
             <AssignmentIcon className="w-6 h-6 text-yellow-400" />
-            {isHovered && <span className="ml-2 text-black dark:text-white">My Tasks</span>}
+            {isHovered && <span className="ml-2 text-black dark:text-white">All Tasks</span>}
           </a>
         </li>
+        
+        {/* My Day */}
+        <li className="rounded-sm w-full">
+          <a href="/my-day" className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full">
+            <Today className="w-6 h-6 text-yellow-400" />
+            {isHovered && <span className="ml-2 text-black dark:text-white">My Day</span>}
+          </a>
+        </li>
+
+        {/* My Week */}
+        <li className="rounded-sm w-full">
+          <a href="/my-week" className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full">
+            <InsertInvitation className="w-6 h-6 text-yellow-400" />
+            {isHovered && <span className="ml-2 text-black dark:text-white">My Week</span>}
+          </a>
+        </li>
+
+
+        {/* Set Workout */}
         <li className="rounded-sm w-full">
           <a href="#" className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full">
             <FitnessCenterIcon className="w-6 h-6 text-yellow-400" />
             {isHovered && <span className="ml-2 text-black dark:text-white">Set Workout</span>}
           </a>
         </li>
+        
+        {/* Completed Tasks */}
         <li className="rounded-sm w-full">
           <a href="/completed-tasks" className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full">
-            <CheckCircleIcon className="w-6 h-6 text-yellow-400" />
+            <DoneAll className="w-6 h-6 text-yellow-400" />
             {isHovered && <span className="ml-2 text-black dark:text-white">Completed Tasks</span>}
           </a>
         </li>
+
+        {/* Passed Tasks */}
         <li className="rounded-sm w-full">
           <a
             href="/passed-tasks"
             className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full"
           >
-            <DateRange className="w-6 h-6 text-yellow-400" />
+            <HistoryIcon className="w-6 h-6 text-yellow-400" />
             {isHovered && <span className="ml-2 text-black dark:text-white">Passed Tasks</span>}
           </a>
         </li>
+
       </ul>
 
 

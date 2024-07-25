@@ -13,8 +13,10 @@ import {
   FitnessCenter as FitnessCenterIcon,
   CheckCircle as CheckCircleIcon,
   ExitToApp as ExitToAppIcon,
-  DateRangeOutlined,
-  DateRange,
+  InsertInvitation as InsertInvitationIcon,
+  Today as TodayIcon,
+  DoneAll as DoneAllIcon,
+  History as HistoryIcon
 } from '@mui/icons-material';
 
 const Sidebar = () => {
@@ -39,25 +41,48 @@ const Sidebar = () => {
   return (
     <div className='ml-4 mt-1 hidden max-md:flex z-100 cursor-pointer'>
       <Sheet>
-
-        <SheetTrigger asChild className='cursor-pointer q'>
+        <SheetTrigger asChild className='cursor-pointer'>
           <MenuIcon />
         </SheetTrigger>
-
-        <SheetContent className='flex flex-col h-full w-[40%]' side='left'>
+        <SheetContent className='flex flex-col h-full w-[50%]' side='left'>
           {/* Sidebar Content */}
           <div className="mt-5 text-xl w-full">
             <div className="flex-1 w-full space-y-6">
               <ul className="pt-2 pb-4 space-y-6 text-sm w-full">
+                {/* All Tasks */}
                 <li className="rounded-sm w-full">
                   <a
                     href="/"
                     className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full"
                   >
                     <AssignmentIcon className="w-6 h-6 text-yellow-400" />
-                    <span className="text-black dark:text-white">My Tasks</span>
+                    <span className="text-black dark:text-white">All Tasks</span>
                   </a>
                 </li>
+                
+                {/* My Day */}
+                <li className="rounded-sm w-full">
+                  <a
+                    href="/my-day"
+                    className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full"
+                  >
+                    <TodayIcon className="w-6 h-6 text-yellow-400" />
+                    <span className="text-black dark:text-white">My Day</span>
+                  </a>
+                </li>
+
+                {/* My Week */}
+                <li className="rounded-sm w-full">
+                  <a
+                    href="/my-week"
+                    className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full"
+                  >
+                    <InsertInvitationIcon className="w-6 h-6 text-yellow-400" />
+                    <span className="text-black dark:text-white">My Week</span>
+                  </a>
+                </li>
+
+                {/* Set Workout */}
                 <li className="rounded-sm w-full">
                   <a
                     href="#"
@@ -67,22 +92,26 @@ const Sidebar = () => {
                     <span className="text-black dark:text-white">Set Workout</span>
                   </a>
                 </li>
+
+                {/* Completed Tasks */}
                 <li className="rounded-sm w-full">
                   <a
                     href="/completed-tasks"
                     className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full"
                   >
-                    <CheckCircleIcon className="w-6 h-6 text-yellow-400" />
+                    <DoneAllIcon className="w-6 h-6 text-yellow-400" />
                     <span className="text-black dark:text-white">Completed Tasks</span>
                   </a>
                 </li>
+
+                {/* Passed Tasks */}
                 <li className="rounded-sm w-full">
                   <a
                     href="/passed-tasks"
                     className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full"
                   >
-                    <DateRange className="w-6 h-6 text-yellow-400" />
-                    <span className="text-black dark:text-white">Completed Tasks</span>
+                    <HistoryIcon className="w-6 h-6 text-yellow-400" />
+                    <span className="text-black dark:text-white">Passed Tasks</span>
                   </a>
                 </li>
               </ul>
@@ -92,7 +121,7 @@ const Sidebar = () => {
           {/* Theme Toggle Switch */}
           <div className="fixed bottom-20 flex flex-row items-center mt-4 hover:bg-gray-200 dark:hover:bg-yellow-600">
             <ModeToggle />
-            <span className="ml-2 text-black dark:text-white ">
+            <span className="ml-2 text-black dark:text-white">
               {theme.charAt(0).toUpperCase() + theme.slice(1)} Mode
             </span>
           </div>
