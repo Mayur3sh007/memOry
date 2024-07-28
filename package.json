@@ -10,8 +10,13 @@
   },
   "dependencies": {
     "@date-io/date-fns": "^3.0.0",
+    "@daypilot/daypilot-lite-react": "^3.24.0",
     "@emotion/react": "^11.13.0",
     "@emotion/styled": "^11.13.0",
+    "@fullcalendar/daygrid": "^6.1.15",
+    "@fullcalendar/interaction": "^6.1.15",
+    "@fullcalendar/react": "^6.1.15",
+    "@fullcalendar/timegrid": "^6.1.15",
     "@mui/icons-material": "^5.16.0",
     "@mui/material": "^5.16.4",
     "@mui/styled-engine-sc": "^6.0.0-alpha.18",
