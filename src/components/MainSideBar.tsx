@@ -8,7 +8,9 @@ import {
   Today,
   Weekend,
   InsertInvitation,
-  DoneAll
+  DoneAll,
+  CalendarViewWeek,
+  CalendarViewDay
 } from '@mui/icons-material';
 import { useUser } from '@/providers/UserContext';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
@@ -17,7 +19,7 @@ import { signOut } from 'firebase/auth';
 import { auth } from '@/config/firebase';
 import { ModeToggle } from './theme-switch';
 import { useTheme } from 'next-themes';
-import { HistoryIcon } from 'lucide-react';
+import { CalendarDays, CalendarIcon, HistoryIcon } from 'lucide-react';
 
 const MainSideBar = () => {
   const [isHovered, setIsHovered] = useState(false);
@@ -72,11 +74,19 @@ const MainSideBar = () => {
         </li>
 
 
-        {/* Set Workout */}
+        {/* My Calender */}
         <li className="rounded-sm w-full">
           <a href="/my-calender" className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full">
+            <CalendarIcon className="w-6 h-6 text-yellow-400" />
+            {isHovered && <span className="ml-2 text-black dark:text-white">My Calender</span>}
+          </a>
+        </li>
+
+        {/* Set Workout */}
+        <li className="rounded-sm w-full">
+          <a href="/my-gym" className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full">
             <FitnessCenterIcon className="w-6 h-6 text-yellow-400" />
-            {isHovered && <span className="ml-2 text-black dark:text-white">Set Workout</span>}
+            {isHovered && <span className="ml-2 text-black dark:text-white">My Gym</span>}
           </a>
         </li>
         

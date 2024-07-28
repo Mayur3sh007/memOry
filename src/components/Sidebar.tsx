@@ -18,6 +18,7 @@ import {
   DoneAll as DoneAllIcon,
   History as HistoryIcon
 } from '@mui/icons-material';
+import { CalendarIcon } from 'lucide-react';
 
 const Sidebar = () => {
   const [isAvatarClicked, setIsAvatarClicked] = useState(false);
@@ -82,14 +83,25 @@ const Sidebar = () => {
                   </a>
                 </li>
 
+                {/* My Calender */}
+                <li className="rounded-sm w-full">
+                  <a
+                    href="/my-calender"
+                    className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full"
+                  >
+                    <CalendarIcon className="w-6 h-6 text-yellow-400" />
+                    <span className="text-black dark:text-white">My Calendar</span>
+                  </a>
+                </li>
+
                 {/* Set Workout */}
                 <li className="rounded-sm w-full">
                   <a
-                    href="#"
+                    href="/my-gym"
                     className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full"
                   >
                     <FitnessCenterIcon className="w-6 h-6 text-yellow-400" />
-                    <span className="text-black dark:text-white">Set Workout</span>
+                    <span className="text-black dark:text-white">My Gym</span>
                   </a>
                 </li>
 
