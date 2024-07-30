@@ -43,7 +43,7 @@ const MainSideBar = () => {
 
   return (
     <div
-      className={`fixed left-0 top-0 h-full bg-white dark:bg-background border-r-2 border-gray-200 dark:border-gray-800
+      className={`fixed h-full bg-white dark:bg-background border-r-2 border-gray-200 dark:border-gray-800
       shadow-lg transition-width duration-300 ${isHovered ? 'w-[240px]' : 'w-[60px]'} overflow-hidden`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}

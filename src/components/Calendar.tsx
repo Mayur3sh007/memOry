@@ -217,7 +217,6 @@ const Calendar: React.FC = () => {
                       handleAddNoteClick(day, hour);
                     }}
                   >
-                    +
                   </Button>
                 </div>
               ))}

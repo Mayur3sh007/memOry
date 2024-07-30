@@ -1,9 +1,11 @@
+import ChannelsSidebar from '@/components/ChannelsSidebar'
 import React from 'react'
 
-const layout = ({children} : {children: React.ReactNode}) => {
+const layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div>
-        {children}
+      <ChannelsSidebar />
+      {children}
     </div>
   )
 }

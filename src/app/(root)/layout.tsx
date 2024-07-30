@@ -21,7 +21,7 @@ const layout = ({ children }: any) => {
             <Header />
           </div>
 
-          <div className="hidden lg:flex z-1000">
+          <div className="hidden lg:flex z-1000 left-0 top-0">
             <MainSideBar />
           </div>
           <main className="flex-grow overflow-x-hidden">
