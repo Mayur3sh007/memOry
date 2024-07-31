@@ -24,7 +24,6 @@ const SignupPage = () => {
   useEffect(() => {
     const savedEmail = localStorage.getItem("email");
     const savedUsername = localStorage.getItem("username");
-    const savedAvatarURL = localStorage.getItem("avatarURL");
 
     if (savedEmail && savedUsername) {
       setEmail(savedEmail);
