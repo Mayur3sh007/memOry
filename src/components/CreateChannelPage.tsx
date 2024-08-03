@@ -68,6 +68,7 @@ const CreateChannelPage: React.FC = () => {
                 name: values.channelName,
                 channelIcon: avatarURL,
                 description: values.description,
+                admin: email,
                 members: members,
                 tasks: [],
                 createdAt: new Date(),

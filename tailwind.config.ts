@@ -84,6 +84,9 @@ const config = {
         sans: ["var(--font-sans)", ...fontFamily.sans],
       },
     },
+    images: {
+      domains: ['firebasestorage.googleapis.com'],
+    },
   },
   plugins: [require("tailwindcss-animate")],
 } satisfies Config
