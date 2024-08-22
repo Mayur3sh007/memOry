@@ -1,12 +1,8 @@
 "use client";
 import AddNotes from "@/components/AddNotes";
-import { useUser } from "@/providers/UserContext";
 import AllNotes from "@/components/AllNotes";
 import PinnedTasks from "@/components/PinnedTasks";
 const Home = () => {
-  const { loading } = useUser();
-
-  if (loading) return <div>Loading...</div>;
 
   return (
     <div className="flex w-screen min-h-screen">
@@ -16,11 +12,12 @@ const Home = () => {
         <div className="w-full max-w-4xl">
           <AddNotes />
         </div>
+
         <div className="flex flex-col justify-center gap-4 w-full mt-4">
           <PinnedTasks />
           <AllNotes />
         </div>
-
+      
       </div>
     </div>
   );

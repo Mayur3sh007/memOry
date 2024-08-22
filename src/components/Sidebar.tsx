@@ -19,6 +19,7 @@ import {
   History as HistoryIcon
 } from '@mui/icons-material';
 import { CalendarIcon } from 'lucide-react';
+import Link from 'next/link';
 
 const Sidebar = () => {
   const [isAvatarClicked, setIsAvatarClicked] = useState(false);
@@ -52,79 +53,58 @@ const Sidebar = () => {
               <ul className="pt-2 pb-4 space-y-6 text-sm w-full">
                 {/* All Tasks */}
                 <li className="rounded-sm w-full">
-                  <a
-                    href="/"
-                    className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full"
-                  >
+                  <Link prefetch href="/" className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full">
                     <AssignmentIcon className="w-6 h-6 text-yellow-400" />
                     <span className="text-black dark:text-white">All Tasks</span>
-                  </a>
+                  </Link>
                 </li>
-                
+
                 {/* My Day */}
                 <li className="rounded-sm w-full">
-                  <a
-                    href="/my-day"
-                    className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full"
-                  >
+                  <Link prefetch href="/my-day" className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full">
                     <TodayIcon className="w-6 h-6 text-yellow-400" />
                     <span className="text-black dark:text-white">My Day</span>
-                  </a>
+                  </Link>
                 </li>
 
                 {/* My Week */}
                 <li className="rounded-sm w-full">
-                  <a
-                    href="/my-week"
-                    className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full"
-                  >
+                  <Link prefetch href="/my-week" className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full">
                     <InsertInvitationIcon className="w-6 h-6 text-yellow-400" />
                     <span className="text-black dark:text-white">My Week</span>
-                  </a>
+                  </Link>
                 </li>
 
-                {/* My Calender */}
+                {/* My Calendar */}
                 <li className="rounded-sm w-full">
-                  <a
-                    href="/my-calender"
-                    className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full"
-                  >
+                  <Link prefetch href="/my-calendar" className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full">
                     <CalendarIcon className="w-6 h-6 text-yellow-400" />
                     <span className="text-black dark:text-white">My Calendar</span>
-                  </a>
+                  </Link>
                 </li>
 
                 {/* Set Workout */}
                 <li className="rounded-sm w-full">
-                  <a
-                    href="/my-gym"
-                    className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full"
-                  >
+                  <Link prefetch href="/my-gym" className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full">
                     <FitnessCenterIcon className="w-6 h-6 text-yellow-400" />
                     <span className="text-black dark:text-white">My Gym</span>
-                  </a>
+                  </Link>
                 </li>
 
                 {/* Completed Tasks */}
                 <li className="rounded-sm w-full">
-                  <a
-                    href="/completed-tasks"
-                    className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full"
-                  >
+                  <Link prefetch href="/completed-tasks" className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full">
                     <DoneAllIcon className="w-6 h-6 text-yellow-400" />
                     <span className="text-black dark:text-white">Completed Tasks</span>
-                  </a>
+                  </Link>
                 </li>
 
                 {/* Passed Tasks */}
                 <li className="rounded-sm w-full">
-                  <a
-                    href="/passed-tasks"
-                    className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full"
-                  >
+                  <Link prefetch href="/passed-tasks" className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full">
                     <HistoryIcon className="w-6 h-6 text-yellow-400" />
                     <span className="text-black dark:text-white">Passed Tasks</span>
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -139,7 +119,7 @@ const Sidebar = () => {
           </div>
 
           {/* Account Button */}
-          <div className="mt-auto">
+           <div className="mt-auto">
             <div className="relative w-full">
               <button
                 onClick={handleAvatarClick}
@@ -165,7 +145,7 @@ const Sidebar = () => {
                 </div>
               )}
             </div>
-          </div>
+          </div> 
         </SheetContent>
       </Sheet>
     </div>

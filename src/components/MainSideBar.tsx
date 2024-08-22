@@ -20,6 +20,7 @@ import { auth } from '@/config/firebase';
 import { ModeToggle } from './theme-switch';
 import { useTheme } from 'next-themes';
 import { CalendarDays, CalendarIcon, HistoryIcon } from 'lucide-react';
+import Link from 'next/link';
 
 const MainSideBar = () => {
   const [isHovered, setIsHovered] = useState(false);
@@ -51,71 +52,66 @@ const MainSideBar = () => {
       <ul className="space-y-6 px-2 mt-6 flex flex-col items-center">
         {/* All Tasks */}
         <li className="rounded-sm w-full">
-          <a href="/" className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full">
+          <Link href="/" className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full">
             <AssignmentIcon className="w-6 h-6 text-yellow-400" />
             {isHovered && <span className="ml-2 text-black dark:text-white">All Tasks</span>}
-          </a>
+          </Link>
         </li>
-        
+
         {/* My Day */}
         <li className="rounded-sm w-full">
-          <a href="/my-day" className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full">
+          <Link href="/my-day" className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full">
             <Today className="w-6 h-6 text-yellow-400" />
             {isHovered && <span className="ml-2 text-black dark:text-white">My Day</span>}
-          </a>
+          </Link>
         </li>
 
         {/* My Week */}
         <li className="rounded-sm w-full">
-          <a href="/my-week" className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full">
+          <Link href="/my-week" className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full">
             <InsertInvitation className="w-6 h-6 text-yellow-400" />
             {isHovered && <span className="ml-2 text-black dark:text-white">My Week</span>}
-          </a>
+          </Link>
         </li>
-
 
         {/* My Calender */}
         <li className="rounded-sm w-full">
-          <a href="/my-calender" className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full">
+          <Link href="/my-calender" className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full">
             <CalendarIcon className="w-6 h-6 text-yellow-400" />
             {isHovered && <span className="ml-2 text-black dark:text-white">My Calender</span>}
-          </a>
+          </Link>
         </li>
 
         {/* Set Workout */}
         <li className="rounded-sm w-full">
-          <a href="/my-gym" className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full">
+          <Link href="/my-gym" className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full">
             <FitnessCenterIcon className="w-6 h-6 text-yellow-400" />
             {isHovered && <span className="ml-2 text-black dark:text-white">My Gym</span>}
-          </a>
+          </Link>
         </li>
-        
+
         {/* Completed Tasks */}
         <li className="rounded-sm w-full">
-          <a href="/completed-tasks" className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full">
+          <Link href="/completed-tasks" className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full">
             <DoneAll className="w-6 h-6 text-yellow-400" />
             {isHovered && <span className="ml-2 text-black dark:text-white">Completed Tasks</span>}
-          </a>
+          </Link>
         </li>
 
         {/* Passed Tasks */}
         <li className="rounded-sm w-full">
-          <a
-            href="/passed-tasks"
-            className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full"
-          >
+          <Link href="/passed-tasks" className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full">
             <HistoryIcon className="w-6 h-6 text-yellow-400" />
             {isHovered && <span className="ml-2 text-black dark:text-white">Passed Tasks</span>}
-          </a>
+          </Link>
         </li>
-
       </ul>
 
 
       <div className={`fixed bottom-14 left-2 flex flex-row items-center 
         ${isHovered ? 'w-[220px]' : 'w-[60px]'} overflow-hidden
          p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600`
-        }
+      }
       >
         <ModeToggle />
         {isHovered && (
@@ -125,11 +121,11 @@ const MainSideBar = () => {
         )}
       </div>
 
+      {/* Account Button */}
       <div className={`fixed bottom-0 left-1 ${isHovered ? 'w-[220px]' : 'w-[60px]'} `}>
         <div className="relative w-full">
           <button
-            onClick={handleAvatarClick}
-            className="flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full"
+            onClick={handleAvatarClick} className='flex items-center p-2 space-x-3 rounded-md hover:bg-gray-200 dark:hover:bg-yellow-600 w-full'
           >
             <Avatar>
               <AvatarImage src={avatarURL ? avatarURL : ''} alt={username ? username : ''} />

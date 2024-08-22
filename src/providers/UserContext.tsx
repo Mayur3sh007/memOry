@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { auth, db } from '@/config/firebase';
 import { setPersistence, browserLocalPersistence, onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
@@ -16,14 +16,15 @@ type UserContextType = {
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
+
   const [user, setUser] = useState<FirebaseUser | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [username, setUsername] = useState<string | null>(null);
   const [email, setEmail] = useState<string | null>(null);
   const [avatarURL, setAvatarURL] = useState<string | null>(null);
   const [uid, setUid] = useState<string | null>(null);
   const router = useRouter();
-
+  
   useEffect(() => {
     const setAuthPersistence = async () => {
       try {
@@ -32,7 +33,6 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
         console.error('Setting persistence error:', error.message);
       }
     };
-
     setAuthPersistence();
 
     const getUser = onAuthStateChanged(auth, async (currentUser) => {
@@ -58,11 +58,15 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       }
     });
 
-    return () => getUser();
-  }, [router]);
+    return () => getUser(); // Cleanup the listener on unmount
+  }, []);
+
+  const contextValue = useMemo(() => ({
+    user, loading, username, email, avatarURL, uid
+  }), [user, loading, username, email, avatarURL, uid]);
 
   return (
-    <UserContext.Provider value={{ user, loading, username, email, avatarURL, uid }}>
+    <UserContext.Provider value={contextValue}>
       {children}
     </UserContext.Provider>
   );

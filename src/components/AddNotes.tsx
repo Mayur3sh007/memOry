@@ -1,3 +1,4 @@
+"use client";
 import React, { useState, ChangeEvent } from 'react';
 import { useNotes } from '@/providers/NotesContext';
 import { useUser } from '@/providers/UserContext';

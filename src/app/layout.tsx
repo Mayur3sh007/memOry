@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Roboto_Serif } from "next/font/google";
 import { cn } from "@/utils/cn";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
 const robotoSerif = Roboto_Serif({ subsets: ["latin"] });
